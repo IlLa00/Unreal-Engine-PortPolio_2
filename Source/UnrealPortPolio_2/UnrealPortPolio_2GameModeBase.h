@@ -12,4 +12,6 @@ class UNREALPORTPOLIO_2_API AUnrealPortPolio_2GameModeBase : public AGameModeBas
 public:
 	AUnrealPortPolio_2GameModeBase();
 
+protected:
+	virtual void BeginPlay() override;
 };

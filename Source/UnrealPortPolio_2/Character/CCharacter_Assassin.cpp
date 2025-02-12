@@ -7,15 +7,21 @@ ACCharacter_Assassin::ACCharacter_Assassin()
 	CHelpers::GetAsset(&MeshAsset, "/Game/Frank_Slash_Pack/Frank_Assassin/Skeletal_Meshes/SK_Frank_Assassin_SkeletalMeshes");
 	CheckNull(MeshAsset);
 
+	GetMesh()->SetSkeletalMesh(MeshAsset);
 	GetMesh()->SetRelativeLocation(FVector(0, 0, -88));
 	GetMesh()->SetRelativeRotation(FRotator(0, -90, 0));
+
+	CHelpers::GetClass(&AnimClass, "/Game/Character/Assassin/ABP_Assassin");
+	CheckNull(AnimClass);
+
+	GetMesh()->SetAnimClass(AnimClass);
 }
 
 void ACCharacter_Assassin::BeginPlay()
 {
 	Super::BeginPlay();
 
-
+	
 }
 
 void ACCharacter_Assassin::Tick(float DeltaTime)
