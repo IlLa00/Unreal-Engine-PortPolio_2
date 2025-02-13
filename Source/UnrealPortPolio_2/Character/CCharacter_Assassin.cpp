@@ -15,6 +15,8 @@ ACCharacter_Assassin::ACCharacter_Assassin()
 	CheckNull(AnimClass);
 
 	GetMesh()->SetAnimClass(AnimClass);
+
+	index = 0;
 }
 
 void ACCharacter_Assassin::BeginPlay()
@@ -27,6 +29,13 @@ void ACCharacter_Assassin::BeginPlay()
 void ACCharacter_Assassin::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+
+}
+
+void ACCharacter_Assassin::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 
 }

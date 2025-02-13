@@ -11,7 +11,7 @@ public class UnrealPortPolio_2 : ModuleRules
         PublicIncludePaths.Add(ModuleDirectory);
 
         PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG", "AIModule",
-            "GameplayTasks","Niagara","NavigationSystem" });
+            "GameplayTasks","Niagara","NavigationSystem","EnhancedInput" });
 
         PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore", "GameplayAbilities", "GameplayTags", "GameplayTasks", "Niagara", "CableComponent" });
 

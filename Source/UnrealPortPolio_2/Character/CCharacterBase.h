@@ -2,12 +2,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "InputActionValue.h"
 #include "AbilitySystemInterface.h"
 #include "CCharacterBase.generated.h"
 
+class UInputMappingContext;
+class UInputAction;
 class USpringArmComponent;
 class UCameraComponent;
 class UAbilitySystemComponent;
+class UDA_ActionMontage;
 
 UCLASS()
 class UNREALPORTPOLIO_2_API ACCharacterBase : public ACharacter, public IAbilitySystemInterface
@@ -27,6 +31,41 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 protected:
+	void Move(const FInputActionValue& Value);
+	void Look(const FInputActionValue& Value);
+	void OnSprint(const FInputActionValue& Value);
+	void OffSprint(const FInputActionValue& Value);
+	void Jumping(const FInputActionValue& Value);
+	void Evade(const FInputActionValue& Value);
+	void Main(const FInputActionValue& Value);
+
+public:
+	virtual TArray<UAnimMontage*> GetMainAttackMontages() { return MainAttackMontages; }
+	virtual UAnimMontage* GetJumpMontage() { return JumpMontage; }
+	virtual UAnimMontage* GetEvadeMontage() { return EvadeMontage; }
+
+protected:
+	UPROPERTY(VisibleDefaultsOnly, Category = "InputAction")
+	UInputMappingContext* MappingContext;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "InputAction")
+	UInputAction* MoveAction;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "InputAction")
+	UInputAction* LookAction;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "InputAction")
+	UInputAction* SprintAction;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "InputAction")
+	UInputAction* JumpAction;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "InputAction")
+	UInputAction* EvadeAction;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "InputAction")
+	UInputAction* MainAction;
+
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	USpringArmComponent* SpringArmComp;
 
@@ -38,4 +77,14 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "GAS")
 	TObjectPtr<UAbilitySystemComponent> ASC;
+
+protected:
+	UDA_ActionMontage* ActionMontageDataAsset;
+
+	TArray<UAnimMontage*> MainAttackMontages;
+	UAnimMontage* JumpMontage;
+	UAnimMontage* EvadeMontage;
+
+public:
+	int32 index;
 };
