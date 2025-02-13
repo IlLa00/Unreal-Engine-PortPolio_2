@@ -14,7 +14,7 @@ public:
 		TArray<TObjectPtr<UAnimMontage>> MainAttack;
 
 	UPROPERTY(EditAnywhere)
-		TObjectPtr<UAnimMontage> Padding;
+		TObjectPtr<UAnimMontage> Sub;
 
 	UPROPERTY(EditAnywhere)
 		TObjectPtr<UAnimMontage> Evade;

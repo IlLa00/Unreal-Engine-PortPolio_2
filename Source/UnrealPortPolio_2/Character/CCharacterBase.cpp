@@ -2,6 +2,7 @@
 #include "Global.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "AbilitySystemComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -9,9 +10,10 @@
 #include "InputMappingContext.h"
 
 #include "GAS/GA/GA_Tag.h"
-#include "GAS/GA/GA_Main.h"
 #include "GAS/GA/GA_Jump.h"
 #include "GAS/GA/GA_Evade.h"
+#include "GAS/GA/GA_Main.h"
+#include "GAS/GA/GA_Sub.h"
 #include "DataAsset/DA_ActionMontage.h"
 
 ACCharacterBase::ACCharacterBase()
@@ -39,6 +41,12 @@ ACCharacterBase::ACCharacterBase()
 	CHelpers::GetAsset(&MainAction, "/Game/Character/InputAction/IA_Main");
 	CheckNull(MainAction);
 	
+	CHelpers::GetAsset(&SubAction, "/Game/Character/InputAction/IA_Sub");
+	CheckNull(SubAction);
+
+	CHelpers::GetAsset(&TagAction, "/Game/Character/InputAction/IA_Tag");
+	CheckNull(TagAction);
+
 	CHelpers::CreateSceneComponent(this, &SpringArmComp, "SpringArmComp", GetMesh());
 	CheckNull(SpringArmComp);
 
@@ -54,6 +62,11 @@ ACCharacterBase::ACCharacterBase()
 	GetCharacterMovement()->RotationRate = FRotator(0, 720, 0);
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
+	CHelpers::CreateSceneComponent(this, &AttackComp, "AttackComp", GetMesh());
+	CheckNull(AttackComp);
+
+	AttackComp->SetActive(false);
+	
 	ASC = CreateDefaultSubobject<UAbilitySystemComponent>("ASC");
 	CheckNull(ASC);
 
@@ -72,17 +85,21 @@ void ACCharacterBase::BeginPlay()
 			SubSystem->AddMappingContext(MappingContext, 0);
 	}
 
-	FGameplayAbilitySpec TagAbilitySpec(UGA_Tag::StaticClass());
-	ASC->GiveAbility(TagAbilitySpec);
-
-	FGameplayAbilitySpec MainAbilitySpec(UGA_Main::StaticClass());
-	ASC->GiveAbility(MainAbilitySpec);
 
 	FGameplayAbilitySpec JumpAbilitySpec(UGA_Jump::StaticClass());
 	ASC->GiveAbility(JumpAbilitySpec);
 
 	FGameplayAbilitySpec EvadeAbilitySpec(UGA_Evade::StaticClass());
 	ASC->GiveAbility(EvadeAbilitySpec);
+
+	FGameplayAbilitySpec MainAbilitySpec(UGA_Main::StaticClass());
+	ASC->GiveAbility(MainAbilitySpec);
+
+	FGameplayAbilitySpec SubAbilitySpec(UGA_Sub::StaticClass());
+	ASC->GiveAbility(SubAbilitySpec);
+
+	FGameplayAbilitySpec TagAbilitySpec(UGA_Tag::StaticClass());
+	ASC->GiveAbility(TagAbilitySpec);
 
 	for (const auto& data : ActionMontageDataAsset->Datas[index].MainAttack)
 	{
@@ -91,9 +108,7 @@ void ACCharacterBase::BeginPlay()
 
 	JumpMontage = ActionMontageDataAsset->Datas[index].Jump;
 	EvadeMontage = ActionMontageDataAsset->Datas[index].Evade;
-	
-	
-	
+	SubMontage = ActionMontageDataAsset->Datas[index].Sub;
 }
 
 void ACCharacterBase::Tick(float DeltaTime)
@@ -116,6 +131,9 @@ void ACCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	EnhancendInputComp->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACCharacterBase::Jumping);
 	EnhancendInputComp->BindAction(EvadeAction, ETriggerEvent::Triggered, this, &ACCharacterBase::Evade);
 	EnhancendInputComp->BindAction(MainAction, ETriggerEvent::Triggered, this, &ACCharacterBase::Main);
+	EnhancendInputComp->BindAction(SubAction, ETriggerEvent::Started, this, &ACCharacterBase::OnSub);
+	EnhancendInputComp->BindAction(SubAction, ETriggerEvent::Completed, this, &ACCharacterBase::OffSub);
+	EnhancendInputComp->BindAction(TagAction, ETriggerEvent::Triggered, this, &ACCharacterBase::Tag);
 }
 
 UAbilitySystemComponent* ACCharacterBase::GetAbilitySystemComponent() const
@@ -171,3 +189,17 @@ void ACCharacterBase::Main(const FInputActionValue& Value)
 	ASC->TryActivateAbility(ASC->FindAbilitySpecFromClass(UGA_Main::StaticClass())->Handle);
 }
 
+void ACCharacterBase::OnSub(const FInputActionValue& Value)
+{
+	ASC->TryActivateAbility(ASC->FindAbilitySpecFromClass(UGA_Sub::StaticClass())->Handle);
+}
+
+void ACCharacterBase::OffSub(const FInputActionValue& Value)
+{
+	ASC->CancelAbility(ASC->FindAbilitySpecFromClass(UGA_Sub::StaticClass())->Ability);
+}
+
+void ACCharacterBase::Tag(const FInputActionValue& Value)
+{
+	ASC->TryActivateAbility(ASC->FindAbilitySpecFromClass(UGA_Tag::StaticClass())->Handle);
+}

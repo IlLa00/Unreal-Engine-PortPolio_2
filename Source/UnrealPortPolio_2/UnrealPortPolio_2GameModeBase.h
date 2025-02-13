@@ -4,6 +4,8 @@
 #include "GameFramework/GameModeBase.h"
 #include "UnrealPortPolio_2GameModeBase.generated.h"
 
+class ACCharacterBase;
+
 UCLASS()
 class UNREALPORTPOLIO_2_API AUnrealPortPolio_2GameModeBase : public AGameModeBase
 {
@@ -14,4 +16,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+
+protected:
+	TArray<ACCharacterBase*> Players;
 };

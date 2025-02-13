@@ -38,11 +38,15 @@ protected:
 	void Jumping(const FInputActionValue& Value);
 	void Evade(const FInputActionValue& Value);
 	void Main(const FInputActionValue& Value);
+	void OnSub(const FInputActionValue& Value);
+	void OffSub(const FInputActionValue& Value);
+	void Tag(const FInputActionValue& Value);
 
 public:
 	virtual TArray<UAnimMontage*> GetMainAttackMontages() { return MainAttackMontages; }
 	virtual UAnimMontage* GetJumpMontage() { return JumpMontage; }
 	virtual UAnimMontage* GetEvadeMontage() { return EvadeMontage; }
+	virtual UAnimMontage* GetSubMontage() { return SubMontage; }
 
 protected:
 	UPROPERTY(VisibleDefaultsOnly, Category = "InputAction")
@@ -66,11 +70,20 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, Category = "InputAction")
 	UInputAction* MainAction;
 
+	UPROPERTY(VisibleDefaultsOnly, Category = "InputAction")
+	UInputAction* SubAction;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "InputAction")
+	UInputAction* TagAction;
+
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	USpringArmComponent* SpringArmComp;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	UCameraComponent* CameraComp;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
+	UCapsuleComponent* AttackComp;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	TSubclassOf<UAnimInstance> AnimClass;
@@ -84,6 +97,7 @@ protected:
 	TArray<UAnimMontage*> MainAttackMontages;
 	UAnimMontage* JumpMontage;
 	UAnimMontage* EvadeMontage;
+	UAnimMontage* SubMontage;
 
 public:
 	int32 index;

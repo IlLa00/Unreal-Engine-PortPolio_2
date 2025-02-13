@@ -17,3 +17,10 @@ void ACPlayerController::OnUnPossess()
 	Super::OnUnPossess();
 
 }
+
+void ACPlayerController::Tag()
+{
+	OnUnPossess();
+
+
+}
