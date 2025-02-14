@@ -100,5 +100,6 @@ protected:
 	UAnimMontage* SubMontage;
 
 public:
-	int32 index;
+	UPROPERTY(BlueprintReadWrite,EditDefaultsOnly)
+		int32 index;
 };

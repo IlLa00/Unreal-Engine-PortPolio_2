@@ -15,6 +15,7 @@ ACCharacter_Assassin::ACCharacter_Assassin()
 	CHelpers::GetClass(&AnimClass, "/Game/Character/Assassin/ABP_Assassin");
 	CheckNull(AnimClass);
 
+
 	AttackComp->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "R_Hand_Weapon");
 
 	GetMesh()->SetAnimClass(AnimClass);

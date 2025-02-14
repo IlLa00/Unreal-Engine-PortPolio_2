@@ -13,7 +13,6 @@ ACCharacter_Katana::ACCharacter_Katana()
 	GetMesh()->SetRelativeRotation(FRotator(0, -90, 0));
 
 	CHelpers::GetClass(&AnimClass, "/Game/Character/Katana/ABP_Katana");
-	CheckNull(AnimClass);
 
 	AttackComp->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "R_Hand_Weapon");
 

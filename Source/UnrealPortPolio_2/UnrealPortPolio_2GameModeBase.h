@@ -17,6 +17,5 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-protected:
-	TArray<ACCharacterBase*> Players;
+
 };

@@ -2,7 +2,6 @@
 #include "AbilitySystemGlobals.h"
 #include "Global.h"
 #include "Character/CCharacter_Assassin.h"
-#include "Character/CCharacter_Katana.h"
 #include "Character/CPlayerController.h"
 
 AUnrealPortPolio_2GameModeBase::AUnrealPortPolio_2GameModeBase()
@@ -26,8 +25,6 @@ void AUnrealPortPolio_2GameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// GetWorld()->SpawnActor<ACCharacter_Assassin>(FVector(0, 0, 1000), FRotator());
-	Players.Add(Cast<ACCharacterBase>(DefaultPawnClass));
-	Players.Add(GetWorld()->SpawnActor<ACCharacter_Katana>(FVector(0, 0, 1000), FRotator()));
+
 
 }
