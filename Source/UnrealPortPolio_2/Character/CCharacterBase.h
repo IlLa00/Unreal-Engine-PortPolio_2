@@ -12,6 +12,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class UAbilitySystemComponent;
 class UDA_ActionMontage;
+class UCPlayerAttributeSet;
 
 UCLASS()
 class UNREALPORTPOLIO_2_API ACCharacterBase : public ACharacter, public IAbilitySystemInterface
@@ -40,14 +41,17 @@ protected:
 	void Main(const FInputActionValue& Value);
 	void OnSub(const FInputActionValue& Value);
 	void OffSub(const FInputActionValue& Value);
-	void Tag(const FInputActionValue& Value);
+
+	virtual void Tag();
 
 public:
 	virtual TArray<UAnimMontage*> GetMainAttackMontages() { return MainAttackMontages; }
 	virtual UAnimMontage* GetJumpMontage() { return JumpMontage; }
 	virtual UAnimMontage* GetEvadeMontage() { return EvadeMontage; }
 	virtual UAnimMontage* GetSubMontage() { return SubMontage; }
-
+	
+	FORCEINLINE UCPlayerAttributeSet* GetPlayerAttributeSet() { return PlayerAttributeSet; }
+	
 protected:
 	UPROPERTY(VisibleDefaultsOnly, Category = "InputAction")
 	UInputMappingContext* MappingContext;
@@ -90,6 +94,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "GAS")
 	TObjectPtr<UAbilitySystemComponent> ASC;
+
+	UPROPERTY(EditDefaultsOnly, Category = "GAS")
+	TObjectPtr<UCPlayerAttributeSet> PlayerAttributeSet;
 
 protected:
 	UDA_ActionMontage* ActionMontageDataAsset;

@@ -9,7 +9,7 @@ UGA_Tag::UGA_Tag()
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.Tag")));
 
 	BlockAbilitiesWithTag.AddTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.Tag")));
-
+	
 	ConstructorHelpers::FClassFinder<UGameplayEffect> GameplayEffectClass (TEXT("/Game/GAS/GameplayEffect/GE_CoolDown"));
 
 	CooldownGameplayEffectClass = GameplayEffectClass.Class;
@@ -28,6 +28,8 @@ void UGA_Tag::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGa
 	CheckNull(PC);
 
 	PrintLine();
+	CLog::Print(Character->GetName());
+	CLog::Print(Character->GetController()->GetName());
 
 	FTimerHandle Timer;
 	Character->GetWorld()->GetTimerManager().SetTimer(Timer, this, &UGA_Tag::Cooldown, 3.0f);
@@ -37,6 +39,8 @@ void UGA_Tag::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGa
 
 void UGA_Tag::Cooldown()
 {
+	PrintLine();
+
 	ACCharacterBase* Character = Cast<ACCharacterBase>(GetCurrentActorInfo()->OwnerActor);
 	CheckNull(Character);
 

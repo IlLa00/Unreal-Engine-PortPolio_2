@@ -8,12 +8,13 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "InputMappingContext.h"
-
-#include "GAS/GA/GA_Tag.h"
+#include "Character/CPlayerController.h"
+#include "GAS/AttributeSet/CPlayerAttributeSet.h"
 #include "GAS/GA/GA_Jump.h"
 #include "GAS/GA/GA_Evade.h"
 #include "GAS/GA/GA_Main.h"
 #include "GAS/GA/GA_Sub.h"
+#include "GAS/GA/GA_Tag.h"
 #include "DataAsset/DA_ActionMontage.h"
 
 ACCharacterBase::ACCharacterBase()
@@ -72,6 +73,9 @@ ACCharacterBase::ACCharacterBase()
 
 	CHelpers::GetAsset(&ActionMontageDataAsset, "/Game/DataAsset/DA_ActionMontage");
 	CheckNull(ActionMontageDataAsset);
+
+	PlayerAttributeSet = CreateDefaultSubobject<UCPlayerAttributeSet>("AttributeSet");
+	CheckNull(PlayerAttributeSet);
 }
 
 void ACCharacterBase::BeginPlay()
@@ -84,7 +88,6 @@ void ACCharacterBase::BeginPlay()
 			ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer()))
 			SubSystem->AddMappingContext(MappingContext, 0);
 	}
-
 
 	FGameplayAbilitySpec JumpAbilitySpec(UGA_Jump::StaticClass());
 	ASC->GiveAbility(JumpAbilitySpec);
@@ -199,7 +202,10 @@ void ACCharacterBase::OffSub(const FInputActionValue& Value)
 	ASC->CancelAbility(ASC->FindAbilitySpecFromClass(UGA_Sub::StaticClass())->Ability);
 }
 
-void ACCharacterBase::Tag(const FInputActionValue& Value)
+void ACCharacterBase::Tag()
 {
-	ASC->TryActivateAbility(ASC->FindAbilitySpecFromClass(UGA_Tag::StaticClass())->Handle);
+	ACPlayerController* PC = Cast<ACPlayerController>(GetController());
+	CheckNull(PC);
+
+	PC->GetCurrentPlayer()->GetAbilitySystemComponent()->TryActivateAbility(ASC->FindAbilitySpecFromClass(UGA_Tag::StaticClass())->Handle);
 }
