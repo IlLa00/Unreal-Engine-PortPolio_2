@@ -5,6 +5,7 @@
 #include "CAIControllerBase.generated.h"
 
 class UAIPerceptionComponent;
+class UAISenseConfig_Sight;
 
 UCLASS()
 class UNREALPORTPOLIO_2_API ACAIControllerBase : public AAIController
@@ -18,6 +19,15 @@ protected:
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void OnUnPossess() override;
 
+private:
+	UFUNCTION()
+	void OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors);
+
 protected:
-	UAIPerceptionComponent* PerceptionComp;
+	UPROPERTY(EditDefaultsOnly, Category = "Component")
+		UAIPerceptionComponent* PerceptionComp;
+
+private:
+	UAISenseConfig_Sight* Sight;
+
 };

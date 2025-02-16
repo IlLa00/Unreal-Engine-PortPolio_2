@@ -22,12 +22,14 @@ void ACPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Players.Add(Cast<ACCharacterBase>(GetCharacter()));
-	
-	FTransform TF;
-	TF.SetLocation(FVector(0, 0, 1000));
-	TF.SetRotation(FQuat(FRotator()));
-	Players.Add(GetWorld()->SpawnActor<ACCharacter_Katana>(KatanaCharacter, TF));
+
+	SpawnPlayerClass.Add(Cast<ACCharacterBase>(GetPawn()));
+	SpawnPlayerClass.Add(Cast<ACCharacterBase>(KatanaCharacter->GetDefaultObject()));
+
+	for (const auto& Class : SpawnPlayerClass)
+	{
+		CLog::Print(Class->GetName());
+	}
 }
 
 void ACPlayerController::OnPossess(APawn* aPawn)
@@ -37,17 +39,17 @@ void ACPlayerController::OnPossess(APawn* aPawn)
 	// 여기서 데이터에셋 값 읽기
 	CurrentPlayer = Cast<ACCharacterBase>(aPawn);
 
-	for (int32 i = 0; i < AttributeDataSet->Datas.Num(); i++)
-	{
-		if (i == CurrentPlayer->index)
-		{
-			CurrentPlayer->GetPlayerAttributeSet()->SetBaseHealth(AttributeDataSet->Datas[i].BaseHealth);
-			CurrentPlayer->GetPlayerAttributeSet()->SetBaseDamage(AttributeDataSet->Datas[i].BaseDamage);
-			CurrentPlayer->GetPlayerAttributeSet()->SetBaseDefense(AttributeDataSet->Datas[i].BaseDefense);
+	//for (int32 i = 0; i < AttributeDataSet->Datas.Num(); i++)
+	//{
+	//	if (i == CurrentPlayer->index)
+	//	{
+	//		CurrentPlayer->GetPlayerAttributeSet()->SetBaseHealth(AttributeDataSet->Datas[i].BaseHealth);
+	//		CurrentPlayer->GetPlayerAttributeSet()->SetBaseDamage(AttributeDataSet->Datas[i].BaseDamage);
+	//		CurrentPlayer->GetPlayerAttributeSet()->SetBaseDefense(AttributeDataSet->Datas[i].BaseDefense);
 
-			// Current값은 생각해야됨
-		}
-	}
+	//		// Current값은 생각해야됨
+	//	}
+	//}
 
 }
 
@@ -55,6 +57,10 @@ void ACPlayerController::OnUnPossess()
 {
 	Super::OnUnPossess();
 
+	CurrentPlayer->GetAbilitySystemComponent()->CancelAllAbilities();
+	CurrentPlayer->Destroyed();
+
+	PrintLine();
 }
 
 UAbilitySystemComponent* ACPlayerController::GetAbilitySystemComponent() const
@@ -64,20 +70,14 @@ UAbilitySystemComponent* ACPlayerController::GetAbilitySystemComponent() const
 
 void ACPlayerController::Tag()
 {
+	FTransform TF;
+	TF.SetLocation(CurrentPlayer->GetActorLocation());
+	TF.SetRotation(FQuat(FRotator(0, -40, 0)));
+
 	OnUnPossess();
 
-	ACCharacterBase* NewCharacter = nullptr;
-	int32 Newindex = (CurrentPlayer->index) + 1;
+	ACCharacter_Katana* Katana = GetWorld()->SpawnActor<ACCharacter_Katana>(KatanaCharacter, TF);
+	CheckNull(Katana);
 
-	if (Players.Num() > Newindex)
-	{
-		NewCharacter = Players[Newindex];
-	}
-	else
-	{
-		Newindex = 0;
-		NewCharacter = Players[Newindex];
-	}
-
-	OnPossess(NewCharacter);
+	OnPossess(Katana);
 }

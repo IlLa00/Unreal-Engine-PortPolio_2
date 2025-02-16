@@ -27,10 +27,6 @@ void UGA_Tag::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGa
 	ACPlayerController* PC = Cast<ACPlayerController>(Character->GetController());
 	CheckNull(PC);
 
-	PrintLine();
-	CLog::Print(Character->GetName());
-	CLog::Print(Character->GetController()->GetName());
-
 	FTimerHandle Timer;
 	Character->GetWorld()->GetTimerManager().SetTimer(Timer, this, &UGA_Tag::Cooldown, 3.0f);
 

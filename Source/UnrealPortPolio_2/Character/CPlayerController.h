@@ -35,10 +35,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "GAS")
 	TObjectPtr<UAbilitySystemComponent> ASC;
 
-	
-
 protected:
-	TArray<ACCharacterBase*> Players;
+	TArray<ACCharacterBase*> SpawnPlayerClass;
 	ACCharacterBase* CurrentPlayer;
 	UDA_PlayerAttribute* AttributeDataSet;
 

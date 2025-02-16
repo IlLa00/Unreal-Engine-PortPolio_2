@@ -207,5 +207,6 @@ void ACCharacterBase::Tag()
 	ACPlayerController* PC = Cast<ACPlayerController>(GetController());
 	CheckNull(PC);
 
+	CLog::Print(PC->GetCurrentPlayer()->GetName());
 	PC->GetCurrentPlayer()->GetAbilitySystemComponent()->TryActivateAbility(ASC->FindAbilitySpecFromClass(UGA_Tag::StaticClass())->Handle);
 }
