@@ -4,6 +4,8 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
+#include "Character/CCharacterBase.h"
+#include "Character/CPlayerController.h"
 
 ACAIControllerBase::ACAIControllerBase()
 {
@@ -13,8 +15,8 @@ ACAIControllerBase::ACAIControllerBase()
 	Sight = CreateDefaultSubobject<UAISenseConfig_Sight>("Sight");
 	CheckNull(Sight);
 
-	Sight->SightRadius = 600.f;
-	Sight->LoseSightRadius = 800.f;
+	Sight->SightRadius = 1000.f;
+	Sight->LoseSightRadius = 1000.f;
 	Sight->PeripheralVisionAngleDegrees = 90.f;
 
 	Sight->DetectionByAffiliation.bDetectEnemies = true;
@@ -23,6 +25,9 @@ ACAIControllerBase::ACAIControllerBase()
 	Sight->SetMaxAge(2.f);
 
 	PerceptionComp->ConfigureSense(*Sight);
+
+	CHelpers::GetAsset(&BTAsset, "/Game/Character/AI/BT_AI");
+	CheckNull(BTAsset);
 }
 
 void ACAIControllerBase::OnPossess(APawn* InPawn)
@@ -30,6 +35,8 @@ void ACAIControllerBase::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 
 	PerceptionComp->OnPerceptionUpdated.AddDynamic(this, &ACAIControllerBase::OnPerceptionUpdated);
+
+	RunBehaviorTree(BTAsset);
 }
 
 void ACAIControllerBase::OnUnPossess()
@@ -43,4 +50,14 @@ void ACAIControllerBase::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActor
 	TArray<AActor*> PerceivedActors;
 	PerceptionComp->GetCurrentlyPerceivedActors(nullptr, PerceivedActors);
 
+	for (const auto& Actor : PerceivedActors)
+	{
+		if (Cast<ACCharacterBase>(Actor)->GetController()->IsA<ACPlayerController>())
+		{
+			if(GetBlackboardComponent())
+				GetBlackboardComponent()->SetValueAsObject("TargetActor", Actor);
+
+			CLog::Print(Actor->GetName());
+		}
+	}
 }

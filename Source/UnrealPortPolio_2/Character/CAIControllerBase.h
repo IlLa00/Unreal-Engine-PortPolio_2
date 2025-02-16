@@ -27,6 +27,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Component")
 		UAIPerceptionComponent* PerceptionComp;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Behavior Tree")
+		UBehaviorTree* BTAsset;
+
 private:
 	UAISenseConfig_Sight* Sight;
 
