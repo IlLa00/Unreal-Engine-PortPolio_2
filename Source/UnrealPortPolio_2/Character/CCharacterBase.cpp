@@ -15,6 +15,7 @@
 #include "GAS/GA/GA_Main.h"
 #include "GAS/GA/GA_Sub.h"
 #include "GAS/GA/GA_Tag.h"
+#include "GAS/GA/GA_QSkill.h"
 #include "DataAsset/DA_ActionMontage.h"
 
 ACCharacterBase::ACCharacterBase()
@@ -47,6 +48,9 @@ ACCharacterBase::ACCharacterBase()
 
 	CHelpers::GetAsset(&TagAction, "/Game/Character/InputAction/IA_Tag");
 	CheckNull(TagAction);
+
+	CHelpers::GetAsset(&QSkillAction, "/Game/Character/InputAction/IA_QSkill");
+	CheckNull(QSkillAction);
 
 	CHelpers::CreateSceneComponent(this, &SpringArmComp, "SpringArmComp", GetMesh());
 	CheckNull(SpringArmComp);
@@ -104,6 +108,9 @@ void ACCharacterBase::BeginPlay()
 	FGameplayAbilitySpec TagAbilitySpec(UGA_Tag::StaticClass());
 	ASC->GiveAbility(TagAbilitySpec);
 
+	FGameplayAbilitySpec QSkillAbilitySpec(UGA_QSkill::StaticClass());
+	ASC->GiveAbility(QSkillAbilitySpec);
+
 	for (const auto& data : ActionMontageDataAsset->Datas[index].MainAttack)
 	{
 		MainAttackMontages.Add(data);
@@ -112,6 +119,7 @@ void ACCharacterBase::BeginPlay()
 	JumpMontage = ActionMontageDataAsset->Datas[index].Jump;
 	EvadeMontage = ActionMontageDataAsset->Datas[index].Evade;
 	SubMontage = ActionMontageDataAsset->Datas[index].Sub;
+	QSkillMontage = ActionMontageDataAsset->Datas[index].QSkill;
 }
 
 void ACCharacterBase::Tick(float DeltaTime)
@@ -137,6 +145,7 @@ void ACCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	EnhancendInputComp->BindAction(SubAction, ETriggerEvent::Started, this, &ACCharacterBase::OnSub);
 	EnhancendInputComp->BindAction(SubAction, ETriggerEvent::Completed, this, &ACCharacterBase::OffSub);
 	EnhancendInputComp->BindAction(TagAction, ETriggerEvent::Triggered, this, &ACCharacterBase::Tag);
+	EnhancendInputComp->BindAction(QSkillAction, ETriggerEvent::Triggered, this, &ACCharacterBase::QSkill);
 }
 
 UAbilitySystemComponent* ACCharacterBase::GetAbilitySystemComponent() const
@@ -200,6 +209,12 @@ void ACCharacterBase::OnSub(const FInputActionValue& Value)
 void ACCharacterBase::OffSub(const FInputActionValue& Value)
 {
 	ASC->CancelAbility(ASC->FindAbilitySpecFromClass(UGA_Sub::StaticClass())->Ability);
+}
+
+void ACCharacterBase::QSkill(const FInputActionValue& Value)
+{
+	PrintLine();
+	ASC->TryActivateAbility(ASC->FindAbilitySpecFromClass(UGA_QSkill::StaticClass())->Handle);
 }
 
 void ACCharacterBase::Tag()
