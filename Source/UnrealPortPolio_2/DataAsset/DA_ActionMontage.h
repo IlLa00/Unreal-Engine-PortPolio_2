@@ -24,6 +24,12 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		TObjectPtr<UAnimMontage> QSkill;
+
+	UPROPERTY(EditAnywhere)
+		TObjectPtr<UAnimMontage> ESkill;
+
+	UPROPERTY(EditAnywhere)
+		TObjectPtr<UAnimMontage> RSkill;
 }; 
 
 

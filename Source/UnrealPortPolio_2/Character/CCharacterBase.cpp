@@ -16,6 +16,8 @@
 #include "GAS/GA/GA_Sub.h"
 #include "GAS/GA/GA_Tag.h"
 #include "GAS/GA/GA_QSkill.h"
+#include "GAS/GA/GA_ESkill.h"
+#include "GAS/GA/GA_RSkill.h"
 #include "DataAsset/DA_ActionMontage.h"
 
 ACCharacterBase::ACCharacterBase()
@@ -51,6 +53,12 @@ ACCharacterBase::ACCharacterBase()
 
 	CHelpers::GetAsset(&QSkillAction, "/Game/Character/InputAction/IA_QSkill");
 	CheckNull(QSkillAction);
+
+	CHelpers::GetAsset(&ESkillAction, "/Game/Character/InputAction/IA_ESkill");
+	CheckNull(ESkillAction);
+
+	CHelpers::GetAsset(&RSkillAction, "/Game/Character/InputAction/IA_RSkill");
+	CheckNull(RSkillAction);
 
 	CHelpers::CreateSceneComponent(this, &SpringArmComp, "SpringArmComp", GetMesh());
 	CheckNull(SpringArmComp);
@@ -111,6 +119,12 @@ void ACCharacterBase::BeginPlay()
 	FGameplayAbilitySpec QSkillAbilitySpec(UGA_QSkill::StaticClass());
 	ASC->GiveAbility(QSkillAbilitySpec);
 
+	FGameplayAbilitySpec ESkillAbilitySpec(UGA_ESkill::StaticClass());
+	ASC->GiveAbility(ESkillAbilitySpec);
+
+	FGameplayAbilitySpec RSkillAbilitySpec(UGA_RSkill::StaticClass());
+	ASC->GiveAbility(RSkillAbilitySpec);
+
 	for (const auto& data : ActionMontageDataAsset->Datas[index].MainAttack)
 	{
 		MainAttackMontages.Add(data);
@@ -120,6 +134,8 @@ void ACCharacterBase::BeginPlay()
 	EvadeMontage = ActionMontageDataAsset->Datas[index].Evade;
 	SubMontage = ActionMontageDataAsset->Datas[index].Sub;
 	QSkillMontage = ActionMontageDataAsset->Datas[index].QSkill;
+	ESkillMontage = ActionMontageDataAsset->Datas[index].ESkill;
+	RSkillMontage = ActionMontageDataAsset->Datas[index].RSkill;
 }
 
 void ACCharacterBase::Tick(float DeltaTime)
@@ -146,6 +162,8 @@ void ACCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	EnhancendInputComp->BindAction(SubAction, ETriggerEvent::Completed, this, &ACCharacterBase::OffSub);
 	EnhancendInputComp->BindAction(TagAction, ETriggerEvent::Triggered, this, &ACCharacterBase::Tag);
 	EnhancendInputComp->BindAction(QSkillAction, ETriggerEvent::Triggered, this, &ACCharacterBase::QSkill);
+	EnhancendInputComp->BindAction(ESkillAction, ETriggerEvent::Triggered, this, &ACCharacterBase::ESkill);
+	EnhancendInputComp->BindAction(RSkillAction, ETriggerEvent::Triggered, this, &ACCharacterBase::RSkill);
 }
 
 UAbilitySystemComponent* ACCharacterBase::GetAbilitySystemComponent() const
@@ -215,6 +233,18 @@ void ACCharacterBase::QSkill(const FInputActionValue& Value)
 {
 	PrintLine();
 	ASC->TryActivateAbility(ASC->FindAbilitySpecFromClass(UGA_QSkill::StaticClass())->Handle);
+}
+
+void ACCharacterBase::ESkill(const FInputActionValue& Value)
+{
+	PrintLine();
+	ASC->TryActivateAbility(ASC->FindAbilitySpecFromClass(UGA_ESkill::StaticClass())->Handle);
+}
+
+void ACCharacterBase::RSkill(const FInputActionValue& Value)
+{
+	PrintLine();
+	ASC->TryActivateAbility(ASC->FindAbilitySpecFromClass(UGA_RSkill::StaticClass())->Handle);
 }
 
 void ACCharacterBase::Tag()

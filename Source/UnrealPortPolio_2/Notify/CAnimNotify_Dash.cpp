@@ -6,8 +6,8 @@ void UCAnimNotify_Dash::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBa
 {
 	Super::Notify(MeshComp, Animation);
 
-	ACCharacterBase* AI = Cast<ACCharacterBase>(MeshComp->GetOwner());
-	CheckNull(AI);
+	ACCharacterBase* Character = Cast<ACCharacterBase>(MeshComp->GetOwner());
+	CheckNull(Character);
 
-	AI->LaunchCharacter(AI->GetActorForwardVector() * FVector(2000, 0, 0), false, false);
+	Character->SetActorLocation(Character->GetActorLocation() + Character->GetActorForwardVector() * 750, true);
 }

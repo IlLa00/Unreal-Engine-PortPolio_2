@@ -1,18 +1,18 @@
-#include "Character/AI/CBTTaskNode_Attack.h"
+#include "Character/AI/CBTTaskNode_ESkill.h"
 #include "Global.h"
 #include "Character/CAIControllerBase.h"
 #include "Character/CCharacterBase.h"
 #include "AbilitySystemComponent.h"
-#include "GAS/GA/GA_Main.h"
+#include "GAS/GA/GA_ESkill.h"
 
-UCBTTaskNode_Attack::UCBTTaskNode_Attack()
+UCBTTaskNode_ESkill::UCBTTaskNode_ESkill()
 {
-	NodeName = "AI Attack";
+	NodeName = "AI ESkill";
 
 	bNotifyTick = true;
 }
 
-EBTNodeResult::Type UCBTTaskNode_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UCBTTaskNode_ESkill::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
 
@@ -22,12 +22,12 @@ EBTNodeResult::Type UCBTTaskNode_Attack::ExecuteTask(UBehaviorTreeComponent& Own
 	ACCharacterBase* AI = Cast<ACCharacterBase>(AIC->GetPawn());
 	CheckNullResult(AI, EBTNodeResult::Failed);
 
-	AI->GetAbilitySystemComponent()->TryActivateAbilityByClass(UGA_Main::StaticClass());
+	AI->GetAbilitySystemComponent()->TryActivateAbilityByClass(UGA_ESkill::StaticClass());
 
 	return EBTNodeResult::InProgress;
 }
 
-void UCBTTaskNode_Attack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+void UCBTTaskNode_ESkill::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 
@@ -39,5 +39,4 @@ void UCBTTaskNode_Attack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 
 	if (!AI->GetCurrentMontage())
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-
 }

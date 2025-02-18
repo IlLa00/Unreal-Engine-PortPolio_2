@@ -20,7 +20,7 @@ void UGA_Evade::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const F
 
 	Character->GetAbilitySystemComponent()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.Evade")));
 
-	Character->LaunchCharacter(Character->GetMesh()->GetRightVector() * FVector(5000,0,0), false, false);
+	Character->LaunchCharacter(Character->GetActorForwardVector() * 5000, false, false);
 
 	UAnimInstance* AnimInstance = Character->GetMesh()->GetAnimInstance();
 	CheckNull(AnimInstance);

@@ -2,15 +2,15 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "CBTTaskNode_Attack.generated.h"
+#include "CBTTaskNode_QSkill.generated.h"
 
 UCLASS()
-class UNREALPORTPOLIO_2_API UCBTTaskNode_Attack : public UBTTaskNode
+class UNREALPORTPOLIO_2_API UCBTTaskNode_QSkill : public UBTTaskNode
 {
 	GENERATED_BODY()
 	
 public:
-	UCBTTaskNode_Attack();
+	UCBTTaskNode_QSkill();
 
 protected:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory);

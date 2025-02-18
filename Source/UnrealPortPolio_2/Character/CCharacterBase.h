@@ -42,6 +42,8 @@ protected:
 	void OnSub(const FInputActionValue& Value);
 	void OffSub(const FInputActionValue& Value);
 	void QSkill(const FInputActionValue& Value);
+	void ESkill(const FInputActionValue& Value);
+	void RSkill(const FInputActionValue& Value);
 
 	virtual void Tag();
 
@@ -51,7 +53,9 @@ public:
 	virtual UAnimMontage* GetEvadeMontage() { return EvadeMontage; }
 	virtual UAnimMontage* GetSubMontage() { return SubMontage; }
 	virtual UAnimMontage* GetQSkillMontage() { return QSkillMontage; }
-	
+	virtual UAnimMontage* GetESkillMontage() { return ESkillMontage; }
+	virtual UAnimMontage* GetRSkillMontage() { return RSkillMontage; }
+
 	FORCEINLINE UCPlayerAttributeSet* GetPlayerAttributeSet() { return PlayerAttributeSet; }
 	
 protected:
@@ -85,6 +89,12 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, Category = "InputAction")
 	UInputAction* QSkillAction;
 
+	UPROPERTY(VisibleDefaultsOnly, Category = "InputAction")
+	UInputAction* ESkillAction;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "InputAction")
+	UInputAction* RSkillAction;
+
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	USpringArmComponent* SpringArmComp;
 
@@ -111,6 +121,8 @@ protected:
 	UAnimMontage* EvadeMontage;
 	UAnimMontage* SubMontage;
 	UAnimMontage* QSkillMontage;
+	UAnimMontage* ESkillMontage;
+	UAnimMontage* RSkillMontage;
 
 public:
 	UPROPERTY(BlueprintReadWrite,EditDefaultsOnly)
