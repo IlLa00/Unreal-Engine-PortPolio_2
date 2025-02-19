@@ -11,6 +11,7 @@
 #include "Character/CPlayerController.h"
 #include "GAS/AttributeSet/CPlayerAttributeSet.h"
 #include "GAS/GA/GA_Jump.h"
+#include "GAS/GA/GA_JumpAttack.h"
 #include "GAS/GA/GA_Evade.h"
 #include "GAS/GA/GA_Main.h"
 #include "GAS/GA/GA_Sub.h"
@@ -104,6 +105,9 @@ void ACCharacterBase::BeginPlay()
 	FGameplayAbilitySpec JumpAbilitySpec(UGA_Jump::StaticClass());
 	ASC->GiveAbility(JumpAbilitySpec);
 
+	FGameplayAbilitySpec JumpAttackAbilitySpec(UGA_JumpAttack::StaticClass());
+	ASC->GiveAbility(JumpAttackAbilitySpec);
+
 	FGameplayAbilitySpec EvadeAbilitySpec(UGA_Evade::StaticClass());
 	ASC->GiveAbility(EvadeAbilitySpec);
 
@@ -131,6 +135,7 @@ void ACCharacterBase::BeginPlay()
 	}
 
 	JumpMontage = ActionMontageDataAsset->Datas[index].Jump;
+	JumpAttackMontage = ActionMontageDataAsset->Datas[index].JumpAttack;
 	EvadeMontage = ActionMontageDataAsset->Datas[index].Evade;
 	SubMontage = ActionMontageDataAsset->Datas[index].Sub;
 	QSkillMontage = ActionMontageDataAsset->Datas[index].QSkill;
@@ -141,6 +146,12 @@ void ACCharacterBase::BeginPlay()
 void ACCharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	/*if (ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.Main"))))
+	{
+		PrintLine();
+		CLog::Print("Hello");
+	}*/
 
 }
 
@@ -214,9 +225,18 @@ void ACCharacterBase::Evade(const FInputActionValue& Value)
 
 void ACCharacterBase::Main(const FInputActionValue& Value)
 {
-	ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.Main"))); // 이건 콤보때문에 생각해야됨
+	if (ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.Jump"))))
+	{
+		ASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.Jump")));
 
-	ASC->TryActivateAbility(ASC->FindAbilitySpecFromClass(UGA_Main::StaticClass())->Handle);
+		ASC->TryActivateAbility(ASC->FindAbilitySpecFromClass(UGA_JumpAttack::StaticClass())->Handle);
+	}
+	else
+	{
+		ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.Main")));
+
+		ASC->TryActivateAbility(ASC->FindAbilitySpecFromClass(UGA_Main::StaticClass())->Handle);
+	}
 }
 
 void ACCharacterBase::OnSub(const FInputActionValue& Value)

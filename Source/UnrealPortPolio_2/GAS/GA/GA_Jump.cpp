@@ -8,6 +8,7 @@ UGA_Jump::UGA_Jump()
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.Jump")));
 
 	BlockAbilitiesWithTag.AddTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.Evade")));
+	BlockAbilitiesWithTag.AddTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.Main")));
 	BlockAbilitiesWithTag.AddTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.Jump")));
 }
 

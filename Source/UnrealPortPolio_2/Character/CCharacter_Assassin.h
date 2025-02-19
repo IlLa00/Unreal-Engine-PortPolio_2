@@ -4,6 +4,8 @@
 #include "Character/CCharacterBase.h"
 #include "CCharacter_Assassin.generated.h"
 
+class UAttackComponent;
+
 UCLASS()
 class UNREALPORTPOLIO_2_API ACCharacter_Assassin : public ACCharacterBase
 {
@@ -16,4 +18,11 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION()
+		void Test(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+protected:
+	UPROPERTY(EditDefaultsOnly)
+	UAttackComponent* NewComp;
 };

@@ -1,6 +1,7 @@
 #include "CCharacter_Assassin.h"
 #include "Global.h"
 #include "Components/CapsuleComponent.h"
+#include "Character/Component/AttackComponent.h"
 
 ACCharacter_Assassin::ACCharacter_Assassin()
 {
@@ -15,6 +16,8 @@ ACCharacter_Assassin::ACCharacter_Assassin()
 	CHelpers::GetClass(&AnimClass, "/Game/Character/Assassin/ABP_Assassin");
 	CheckNull(AnimClass);
 
+	CHelpers::CreateSceneComponent(this, &NewComp, "NewComp", GetMesh());
+	CheckNull(NewComp);
 
 	AttackComp->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "R_Hand_Weapon");
 
@@ -27,7 +30,7 @@ void ACCharacter_Assassin::BeginPlay()
 {
 	Super::BeginPlay();
 
-	
+	NewComp->OnComponentBeginOverlap.AddDynamic(this, &ACCharacter_Assassin::Test);
 }
 
 void ACCharacter_Assassin::Tick(float DeltaTime)
@@ -42,4 +45,9 @@ void ACCharacter_Assassin::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 
+}
+
+void ACCharacter_Assassin::Test(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	PrintLine();
 }

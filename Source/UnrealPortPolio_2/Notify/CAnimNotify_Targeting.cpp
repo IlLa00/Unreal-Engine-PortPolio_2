@@ -11,11 +11,18 @@ void UCAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSeque
 
 	TArray<AActor*> Ignores;
 
-	FHitResult HitResult;
-	if (UKismetSystemLibrary::SphereTraceSingleByProfile(Character->GetWorld(), Character->GetActorLocation(), Character->GetActorLocation() + 100, 1500.f, "Pawn", false, Ignores, EDrawDebugTrace::Persistent, HitResult, true))
+	TArray<FHitResult> HitResults;
+	if (UKismetSystemLibrary::SphereTraceMultiByProfile(Character->GetWorld(), Character->GetActorLocation(), Character->GetActorLocation(), 1500.f, "Pawn", true, Ignores, EDrawDebugTrace::Persistent, HitResults, true))
 	{
-		CLog::Print(HitResult.GetActor()->GetName());
+		for (const auto& Result : HitResults)
+		{
+			if (!Result.GetActor()->IsA<ACCharacterBase>())
+				return;
 
-		Character->SetActorLocation((HitResult.GetActor()->GetActorLocation()) + (HitResult.GetActor()->GetActorForwardVector() * -100));
+			CLog::Print(Result.GetActor()->GetName());
+
+			Character->SetActorRotation(FQuat(FRotator(Result.GetActor()->GetActorRotation())));
+			Character->SetActorLocation((Result.GetActor()->GetActorLocation()) + (Result.GetActor()->GetActorForwardVector() * -50));
+		}
 	}
 }

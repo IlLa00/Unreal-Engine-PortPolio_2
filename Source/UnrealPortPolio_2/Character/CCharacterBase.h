@@ -50,6 +50,7 @@ protected:
 public:
 	virtual TArray<UAnimMontage*> GetMainAttackMontages() { return MainAttackMontages; }
 	virtual UAnimMontage* GetJumpMontage() { return JumpMontage; }
+	virtual UAnimMontage* GetJumpAttackMontage() { return JumpAttackMontage; }
 	virtual UAnimMontage* GetEvadeMontage() { return EvadeMontage; }
 	virtual UAnimMontage* GetSubMontage() { return SubMontage; }
 	virtual UAnimMontage* GetQSkillMontage() { return QSkillMontage; }
@@ -118,6 +119,7 @@ protected:
 
 	TArray<UAnimMontage*> MainAttackMontages;
 	UAnimMontage* JumpMontage;
+	UAnimMontage* JumpAttackMontage;
 	UAnimMontage* EvadeMontage;
 	UAnimMontage* SubMontage;
 	UAnimMontage* QSkillMontage;

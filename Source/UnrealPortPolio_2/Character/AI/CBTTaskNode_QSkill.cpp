@@ -2,6 +2,7 @@
 #include "Global.h"
 #include "Character/CAIControllerBase.h"
 #include "Character/CCharacterBase.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "AbilitySystemComponent.h"
 #include "GAS/GA/GA_QSkill.h"
 

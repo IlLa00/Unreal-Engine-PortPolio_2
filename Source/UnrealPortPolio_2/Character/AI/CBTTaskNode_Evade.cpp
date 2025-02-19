@@ -29,5 +29,17 @@ EBTNodeResult::Type UCBTTaskNode_Evade::ExecuteTask(UBehaviorTreeComponent& Owne
 
 void UCBTTaskNode_Evade::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
+	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 
+	ACAIControllerBase* AIC = Cast<ACAIControllerBase>(OwnerComp.GetAIOwner());
+	CheckNull(AIC);
+
+	ACCharacterBase* AI = Cast<ACCharacterBase>(AIC->GetPawn());
+	CheckNull(AI);
+
+	if (!AI->GetCurrentMontage())
+	{
+		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		AI->GetAbilitySystemComponent()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.Evade")));
+	}
 }

@@ -7,8 +7,8 @@ UGA_Main::UGA_Main()
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.Main")));
 
-	BlockAbilitiesWithTag.AddTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.QSkill")));
 	BlockAbilitiesWithTag.AddTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.Main")));
+	BlockAbilitiesWithTag.AddTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.QSkill")));
 	BlockAbilitiesWithTag.AddTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.ESkill")));
 	BlockAbilitiesWithTag.AddTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.RSkill")));
 }
@@ -20,13 +20,29 @@ void UGA_Main::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FG
 	ACCharacterBase* Character = Cast<ACCharacterBase>(ActorInfo->OwnerActor);
 	CheckNull(Character);
 
-	Character->GetAbilitySystemComponent()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.Main")));
-
 	UAnimInstance* AnimInstance = Character->GetMesh()->GetAnimInstance();
 	CheckNull(AnimInstance);
 
 	FOnMontageEnded OnMontageEndDelegate;
 	OnMontageEndDelegate.BindUObject(this, &UGA_Main::EndMontage);
+
+	/*if (AnimInstance->GetCurrentActiveMontage() == Character->GetMainAttackMontages()[0])
+	{
+		AnimInstance->Montage_Stop(0.f);
+		AnimInstance->Montage_Play(Character->GetMainAttackMontages()[1]);
+		AnimInstance->Montage_SetEndDelegate(OnMontageEndDelegate, Character->GetMainAttackMontages()[1]);
+	}
+	else if (AnimInstance->GetCurrentActiveMontage() == Character->GetMainAttackMontages()[1])
+	{
+		AnimInstance->Montage_Stop(0.f);
+		AnimInstance->Montage_Play(Character->GetMainAttackMontages()[2]);
+		AnimInstance->Montage_SetEndDelegate(OnMontageEndDelegate, Character->GetMainAttackMontages()[2]);
+	}
+	else
+	{
+		AnimInstance->Montage_Play(Character->GetMainAttackMontages()[0]);
+		AnimInstance->Montage_SetEndDelegate(OnMontageEndDelegate, Character->GetMainAttackMontages()[0]);
+	}*/
 
 	AnimInstance->Montage_Play(Character->GetMainAttackMontages()[0]);
 	AnimInstance->Montage_SetEndDelegate(OnMontageEndDelegate, Character->GetMainAttackMontages()[0]);

@@ -38,5 +38,8 @@ void UCBTTaskNode_ESkill::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 	CheckNull(AI);
 
 	if (!AI->GetCurrentMontage())
+	{
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		AI->GetAbilitySystemComponent()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.ESkill")));
+	}
 }

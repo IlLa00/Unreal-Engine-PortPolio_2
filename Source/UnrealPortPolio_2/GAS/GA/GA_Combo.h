@@ -2,16 +2,15 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
-#include "GA_Main.generated.h"
-
+#include "GA_Combo.generated.h"
 
 UCLASS()
-class UNREALPORTPOLIO_2_API UGA_Main : public UGameplayAbility
+class UNREALPORTPOLIO_2_API UGA_Combo : public UGameplayAbility
 {
 	GENERATED_BODY()
 	
 public:
-	UGA_Main();
+	UGA_Combo();
 
 protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;

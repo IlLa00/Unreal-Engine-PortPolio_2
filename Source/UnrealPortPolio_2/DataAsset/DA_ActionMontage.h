@@ -23,6 +23,9 @@ public:
 		TObjectPtr<UAnimMontage> Jump;
 
 	UPROPERTY(EditAnywhere)
+		TObjectPtr<UAnimMontage> JumpAttack;
+
+	UPROPERTY(EditAnywhere)
 		TObjectPtr<UAnimMontage> QSkill;
 
 	UPROPERTY(EditAnywhere)
