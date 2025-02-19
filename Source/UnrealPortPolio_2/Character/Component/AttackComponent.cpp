@@ -1,6 +1,11 @@
 #include "Character/Component/AttackComponent.h"
 
-void UAttackComponent::SetType(EAttackType NewType)
+UAttackComponent::UAttackComponent()
 {
-	CurrentType = NewType;
+	AttackType = EAttackType::AT_Normal;
+}
+
+void UAttackComponent::SetAttackType(EAttackType NewType)
+{
+	AttackType = NewType;
 }

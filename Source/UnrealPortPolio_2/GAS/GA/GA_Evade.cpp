@@ -34,8 +34,6 @@ void UGA_Evade::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const F
 
 void UGA_Evade::EndMontage(UAnimMontage* Montage, bool bInterrupted)
 {
-	PrintLine();
-
 	ACCharacterBase* Character = Cast<ACCharacterBase>(GetCurrentActorInfo()->OwnerActor);
 	CheckNull(Character);
 

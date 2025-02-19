@@ -10,6 +10,7 @@ class UInputMappingContext;
 class UInputAction;
 class USpringArmComponent;
 class UCameraComponent;
+class UAttackComponent;
 class UAbilitySystemComponent;
 class UDA_ActionMontage;
 class UCPlayerAttributeSet;
@@ -47,6 +48,9 @@ protected:
 
 	virtual void Tag();
 
+	UFUNCTION()
+	void Overlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
 public:
 	virtual TArray<UAnimMontage*> GetMainAttackMontages() { return MainAttackMontages; }
 	virtual UAnimMontage* GetJumpMontage() { return JumpMontage; }
@@ -56,6 +60,7 @@ public:
 	virtual UAnimMontage* GetQSkillMontage() { return QSkillMontage; }
 	virtual UAnimMontage* GetESkillMontage() { return ESkillMontage; }
 	virtual UAnimMontage* GetRSkillMontage() { return RSkillMontage; }
+	virtual UAnimMontage* GetKnockBackMontage() { return KnockBackMontage; }
 
 	FORCEINLINE UCPlayerAttributeSet* GetPlayerAttributeSet() { return PlayerAttributeSet; }
 	
@@ -103,7 +108,7 @@ protected:
 	UCameraComponent* CameraComp;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
-	UCapsuleComponent* AttackComp;
+	UAttackComponent* AttackComp;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	TSubclassOf<UAnimInstance> AnimClass;
@@ -125,6 +130,7 @@ protected:
 	UAnimMontage* QSkillMontage;
 	UAnimMontage* ESkillMontage;
 	UAnimMontage* RSkillMontage;
+	UAnimMontage* KnockBackMontage;
 
 public:
 	UPROPERTY(BlueprintReadWrite,EditDefaultsOnly)

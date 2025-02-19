@@ -8,8 +8,8 @@ UENUM(BlueprintType)
 enum class EAttackType : uint8
 {
     AT_Normal UMETA(DisplayName = "Normal"),  
-    WT_Airborne UMETA(DisplayName = "Airborne"),
-    WT_KnockBack UMETA(DisplayName = "KnockBack")   
+    AT_Airborne UMETA(DisplayName = "Airborne"),
+    AT_KnockBack UMETA(DisplayName = "KnockBack")   
 };
 
 UCLASS()
@@ -18,9 +18,14 @@ class UNREALPORTPOLIO_2_API UAttackComponent : public UCapsuleComponent
 	GENERATED_BODY()
 
 public:
-    void SetType(EAttackType NewType);
+    UAttackComponent();
 
 public:
+    void SetAttackType(EAttackType NewType);
+
+    FORCEINLINE EAttackType GetAttackType() { return AttackType; }
+
+protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AttackType")
         EAttackType AttackType;
 

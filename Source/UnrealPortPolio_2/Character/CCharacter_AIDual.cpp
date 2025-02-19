@@ -1,6 +1,6 @@
 #include "Character/CCharacter_AIDual.h"
 #include "Global.h"
-#include "Components/CapsuleComponent.h"
+#include "Character/Component/AttackComponent.h"
 
 ACCharacter_AIDual::ACCharacter_AIDual()
 {

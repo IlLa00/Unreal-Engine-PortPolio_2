@@ -20,6 +20,12 @@ public:
 		TObjectPtr<UAnimMontage> Evade;
 
 	UPROPERTY(EditAnywhere)
+		TObjectPtr<UAnimMontage> KnockBack;
+
+	UPROPERTY(EditAnywhere)
+		TObjectPtr<UAnimMontage> KnockDown;
+
+	UPROPERTY(EditAnywhere)
 		TObjectPtr<UAnimMontage> Jump;
 
 	UPROPERTY(EditAnywhere)

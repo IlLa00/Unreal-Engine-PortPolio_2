@@ -2,7 +2,7 @@
 #include "Global.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
-#include "Components/CapsuleComponent.h"
+#include "Character/Component/AttackComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "AbilitySystemComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -19,6 +19,7 @@
 #include "GAS/GA/GA_QSkill.h"
 #include "GAS/GA/GA_ESkill.h"
 #include "GAS/GA/GA_RSkill.h"
+#include "GAS/GA/GA_KnockBack.h"
 #include "DataAsset/DA_ActionMontage.h"
 
 ACCharacterBase::ACCharacterBase()
@@ -129,6 +130,9 @@ void ACCharacterBase::BeginPlay()
 	FGameplayAbilitySpec RSkillAbilitySpec(UGA_RSkill::StaticClass());
 	ASC->GiveAbility(RSkillAbilitySpec);
 
+	FGameplayAbilitySpec KnockBackAbilitySpec(UGA_KnockBack::StaticClass());
+	ASC->GiveAbility(KnockBackAbilitySpec);
+
 	for (const auto& data : ActionMontageDataAsset->Datas[index].MainAttack)
 	{
 		MainAttackMontages.Add(data);
@@ -141,6 +145,10 @@ void ACCharacterBase::BeginPlay()
 	QSkillMontage = ActionMontageDataAsset->Datas[index].QSkill;
 	ESkillMontage = ActionMontageDataAsset->Datas[index].ESkill;
 	RSkillMontage = ActionMontageDataAsset->Datas[index].RSkill;
+	KnockBackMontage = ActionMontageDataAsset->Datas[index].KnockBack;
+
+	if(AttackComp)
+		AttackComp->OnComponentBeginOverlap.AddDynamic(this, &ACCharacterBase::Overlap);
 }
 
 void ACCharacterBase::Tick(float DeltaTime)
@@ -274,4 +282,31 @@ void ACCharacterBase::Tag()
 
 	CLog::Print(PC->GetCurrentPlayer()->GetName());
 	PC->GetCurrentPlayer()->GetAbilitySystemComponent()->TryActivateAbility(ASC->FindAbilitySpecFromClass(UGA_Tag::StaticClass())->Handle);
+}
+
+void ACCharacterBase::Overlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor == this) return;
+
+	ACCharacterBase* Character = Cast<ACCharacterBase>(OtherActor);
+	CheckNull(Character);
+
+	PrintLine();
+
+	switch (AttackComp->GetAttackType())
+	{
+	case EAttackType::AT_Normal:
+		PrintLine();
+		break;
+	case EAttackType::AT_Airborne:
+		PrintLine();
+		break;
+	case EAttackType::AT_KnockBack:
+		PrintLine();
+		Character->GetAbilitySystemComponent()->TryActivateAbilityByClass(UGA_KnockBack::StaticClass());
+		break;
+	default:
+
+		break;
+	}
 }

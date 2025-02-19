@@ -1,6 +1,6 @@
 #include "Character/CCharacter_AIGreateSword.h"
 #include "Global.h"
-#include "Components/CapsuleComponent.h"
+#include "Character/Component/AttackComponent.h"
 
 ACCharacter_AIGreateSword::ACCharacter_AIGreateSword()
 {

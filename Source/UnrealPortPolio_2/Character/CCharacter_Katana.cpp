@@ -1,6 +1,6 @@
 #include "CCharacter_Katana.h"
 #include "Global.h"
-#include "Components/CapsuleComponent.h"
+#include "Character/Component/AttackComponent.h"
 
 ACCharacter_Katana::ACCharacter_Katana()
 {
