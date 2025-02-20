@@ -13,7 +13,12 @@ UGA_ESkill::UGA_ESkill()
 	BlockAbilitiesWithTag.AddTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.ESkill")));
 	BlockAbilitiesWithTag.AddTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.RSkill")));
 
-	CooldownGameplayEffectClass = UGE_CoolDown::StaticClass();
+	BlockAbilitiesWithTag.AddTag(FGameplayTag::RequestGameplayTag(FName("Character.Cooldown.Q")));
+
+	CHelpers::GetClass(&GECooldown, "/Game/GAS/GameplayEffect/asdf");
+	CheckNull(GECooldown);
+
+	CooldownGameplayEffectClass = GECooldown;
 }
 
 void UGA_ESkill::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
