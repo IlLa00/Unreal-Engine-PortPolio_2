@@ -5,6 +5,7 @@
 #include "Character/CCharacter_Katana.h"
 #include "DataAsset/DA_PlayerAttribute.h"
 #include "GAS/AttributeSet/CPlayerAttributeSet.h"
+#include "GAS/GA/GA_Tag.h"
 
 ACPlayerController::ACPlayerController()
 {
@@ -22,6 +23,8 @@ void ACPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	FGameplayAbilitySpec TagAbilitySpec(UGA_Tag::StaticClass());
+	ASC->GiveAbility(TagAbilitySpec);
 
 	SpawnPlayerClass.Add(Cast<ACCharacterBase>(GetPawn()));
 	SpawnPlayerClass.Add(Cast<ACCharacterBase>(KatanaCharacter->GetDefaultObject()));
@@ -57,10 +60,6 @@ void ACPlayerController::OnUnPossess()
 {
 	Super::OnUnPossess();
 
-	CurrentPlayer->GetAbilitySystemComponent()->CancelAllAbilities();
-	CurrentPlayer->Destroyed();
-
-	PrintLine();
 }
 
 UAbilitySystemComponent* ACPlayerController::GetAbilitySystemComponent() const
@@ -70,11 +69,18 @@ UAbilitySystemComponent* ACPlayerController::GetAbilitySystemComponent() const
 
 void ACPlayerController::Tag()
 {
-	FTransform TF;
-	TF.SetLocation(CurrentPlayer->GetActorLocation());
-	TF.SetRotation(FQuat(FRotator(0, -40, 0)));
+	FVector NewLocation = CurrentPlayer->GetActorLocation();
 
-	OnUnPossess();
+	CurrentPlayer->GetAbilitySystemComponent()->CancelAllAbilities();
+	CurrentPlayer->SetActorLocation(FVector(0, 0, 1000));
+	CurrentPlayer->UnPossessed();
+
+	CurrentPlayer->Destroy();
+
+
+	FTransform TF;
+	TF.SetLocation(NewLocation);
+	TF.SetRotation(FQuat(FRotator(0, -40, 0)));
 
 	ACCharacter_Katana* Katana = GetWorld()->SpawnActor<ACCharacter_Katana>(KatanaCharacter, TF);
 	CheckNull(Katana);

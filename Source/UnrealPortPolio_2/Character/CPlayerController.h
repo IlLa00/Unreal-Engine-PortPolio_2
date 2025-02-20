@@ -23,9 +23,8 @@ protected:
 	virtual void OnUnPossess() override;
 	virtual void BeginPlay() override;
 
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-
 public:
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	FORCEINLINE ACCharacterBase* GetCurrentPlayer() { return CurrentPlayer; }
 
 public:

@@ -19,16 +19,13 @@ void UGA_Tag::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGa
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	ACCharacterBase* Character = Cast<ACCharacterBase>(ActorInfo->OwnerActor);
-	CheckNull(Character);
+	PrintLine();
 
-	Character->GetAbilitySystemComponent()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.Tag")));
-
-	ACPlayerController* PC = Cast<ACPlayerController>(Character->GetController());
+	ACPlayerController* PC = Cast<ACPlayerController>(ActorInfo->OwnerActor);
 	CheckNull(PC);
 
 	FTimerHandle Timer;
-	Character->GetWorld()->GetTimerManager().SetTimer(Timer, this, &UGA_Tag::Cooldown, 3.0f);
+	PC->GetWorld()->GetTimerManager().SetTimer(Timer, this, &UGA_Tag::Cooldown, 3.0f);
 
 	PC->Tag();
 }
@@ -36,11 +33,6 @@ void UGA_Tag::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGa
 void UGA_Tag::Cooldown()
 {
 	PrintLine();
-
-	ACCharacterBase* Character = Cast<ACCharacterBase>(GetCurrentActorInfo()->OwnerActor);
-	CheckNull(Character);
-
-	Character->GetAbilitySystemComponent()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.Tag")));
 
 	EndAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), false, false);
 }

@@ -40,8 +40,8 @@ protected:
 	void Jumping(const FInputActionValue& Value);
 	void Evade(const FInputActionValue& Value);
 	void Main(const FInputActionValue& Value);
-	void OnSub(const FInputActionValue& Value);
-	void OffSub(const FInputActionValue& Value);
+	void OnGuard(const FInputActionValue& Value);
+	void OffGuard(const FInputActionValue& Value);
 	void QSkill(const FInputActionValue& Value);
 	void ESkill(const FInputActionValue& Value);
 	void RSkill(const FInputActionValue& Value);
@@ -49,19 +49,21 @@ protected:
 	virtual void Tag();
 
 	UFUNCTION()
-	void Overlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	virtual void Overlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	
 public:
 	virtual TArray<UAnimMontage*> GetMainAttackMontages() { return MainAttackMontages; }
 	virtual UAnimMontage* GetJumpMontage() { return JumpMontage; }
 	virtual UAnimMontage* GetJumpAttackMontage() { return JumpAttackMontage; }
 	virtual UAnimMontage* GetEvadeMontage() { return EvadeMontage; }
-	virtual UAnimMontage* GetSubMontage() { return SubMontage; }
+	virtual UAnimMontage* GetGuardMontage() { return GuardMontage; }
+	virtual UAnimMontage* GetBlockMontage() { return BlockMontage; }
 	virtual UAnimMontage* GetQSkillMontage() { return QSkillMontage; }
 	virtual UAnimMontage* GetESkillMontage() { return ESkillMontage; }
 	virtual UAnimMontage* GetRSkillMontage() { return RSkillMontage; }
 	virtual UAnimMontage* GetKnockBackMontage() { return KnockBackMontage; }
-
+	virtual UAnimMontage* GetKnockDownMontage() { return KnockDownMontage; }
+	
 	FORCEINLINE UCPlayerAttributeSet* GetPlayerAttributeSet() { return PlayerAttributeSet; }
 	
 protected:
@@ -87,7 +89,7 @@ protected:
 	UInputAction* MainAction;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "InputAction")
-	UInputAction* SubAction;
+	UInputAction* GuardAction;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "InputAction")
 	UInputAction* TagAction;
@@ -101,16 +103,16 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, Category = "InputAction")
 	UInputAction* RSkillAction;
 
-	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	USpringArmComponent* SpringArmComp;
 
-	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	UCameraComponent* CameraComp;
 
-	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	UAttackComponent* AttackComp;
 
-	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	TSubclassOf<UAnimInstance> AnimClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "GAS")
@@ -126,11 +128,13 @@ protected:
 	UAnimMontage* JumpMontage;
 	UAnimMontage* JumpAttackMontage;
 	UAnimMontage* EvadeMontage;
-	UAnimMontage* SubMontage;
+	UAnimMontage* GuardMontage;
+	UAnimMontage* BlockMontage;
 	UAnimMontage* QSkillMontage;
 	UAnimMontage* ESkillMontage;
 	UAnimMontage* RSkillMontage;
 	UAnimMontage* KnockBackMontage;
+	UAnimMontage* KnockDownMontage;
 
 public:
 	UPROPERTY(BlueprintReadWrite,EditDefaultsOnly)

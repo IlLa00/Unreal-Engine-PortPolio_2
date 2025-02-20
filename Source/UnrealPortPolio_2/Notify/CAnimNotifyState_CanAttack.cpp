@@ -23,11 +23,10 @@ void UCAnimNotifyState_CanAttack::NotifyBegin(USkeletalMeshComponent* MeshComp, 
 		UAttackComponent* AttackComp = Cast<UAttackComponent>(Comp);
 		CheckNull(AttackComp);
 
-		if (Comp->GetName() == CompName.ToString())
+		if (AttackComp->GetName() == CompName.ToString())
 		{
 			AttackComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 			AttackComp->SetAttackType(AttackType);
-			PrintLine();
 		}
 	}
 }

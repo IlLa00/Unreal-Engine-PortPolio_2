@@ -14,12 +14,13 @@
 #include "GAS/GA/GA_JumpAttack.h"
 #include "GAS/GA/GA_Evade.h"
 #include "GAS/GA/GA_Main.h"
-#include "GAS/GA/GA_Sub.h"
+#include "GAS/GA/GA_Guard.h"
 #include "GAS/GA/GA_Tag.h"
 #include "GAS/GA/GA_QSkill.h"
 #include "GAS/GA/GA_ESkill.h"
 #include "GAS/GA/GA_RSkill.h"
 #include "GAS/GA/GA_KnockBack.h"
+#include "GAS/GA/GA_KnockDown.h"
 #include "DataAsset/DA_ActionMontage.h"
 
 ACCharacterBase::ACCharacterBase()
@@ -47,8 +48,8 @@ ACCharacterBase::ACCharacterBase()
 	CHelpers::GetAsset(&MainAction, "/Game/Character/InputAction/IA_Main");
 	CheckNull(MainAction);
 	
-	CHelpers::GetAsset(&SubAction, "/Game/Character/InputAction/IA_Sub");
-	CheckNull(SubAction);
+	CHelpers::GetAsset(&GuardAction, "/Game/Character/InputAction/IA_Sub");
+	CheckNull(GuardAction);
 
 	CHelpers::GetAsset(&TagAction, "/Game/Character/InputAction/IA_Tag");
 	CheckNull(TagAction);
@@ -80,7 +81,7 @@ ACCharacterBase::ACCharacterBase()
 	CHelpers::CreateSceneComponent(this, &AttackComp, "AttackComp", GetMesh());
 	CheckNull(AttackComp);
 
-	AttackComp->SetActive(false);
+	AttackComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	
 	ASC = CreateDefaultSubobject<UAbilitySystemComponent>("ASC");
 	CheckNull(ASC);
@@ -115,11 +116,8 @@ void ACCharacterBase::BeginPlay()
 	FGameplayAbilitySpec MainAbilitySpec(UGA_Main::StaticClass());
 	ASC->GiveAbility(MainAbilitySpec);
 
-	FGameplayAbilitySpec SubAbilitySpec(UGA_Sub::StaticClass());
-	ASC->GiveAbility(SubAbilitySpec);
-
-	FGameplayAbilitySpec TagAbilitySpec(UGA_Tag::StaticClass());
-	ASC->GiveAbility(TagAbilitySpec);
+	FGameplayAbilitySpec GuardAbilitySpec(UGA_Guard::StaticClass());
+	ASC->GiveAbility(GuardAbilitySpec);
 
 	FGameplayAbilitySpec QSkillAbilitySpec(UGA_QSkill::StaticClass());
 	ASC->GiveAbility(QSkillAbilitySpec);
@@ -133,6 +131,9 @@ void ACCharacterBase::BeginPlay()
 	FGameplayAbilitySpec KnockBackAbilitySpec(UGA_KnockBack::StaticClass());
 	ASC->GiveAbility(KnockBackAbilitySpec);
 
+	FGameplayAbilitySpec KnockDownAbilitySpec(UGA_KnockDown::StaticClass());
+	ASC->GiveAbility(KnockDownAbilitySpec);
+
 	for (const auto& data : ActionMontageDataAsset->Datas[index].MainAttack)
 	{
 		MainAttackMontages.Add(data);
@@ -141,11 +142,13 @@ void ACCharacterBase::BeginPlay()
 	JumpMontage = ActionMontageDataAsset->Datas[index].Jump;
 	JumpAttackMontage = ActionMontageDataAsset->Datas[index].JumpAttack;
 	EvadeMontage = ActionMontageDataAsset->Datas[index].Evade;
-	SubMontage = ActionMontageDataAsset->Datas[index].Sub;
+	GuardMontage = ActionMontageDataAsset->Datas[index].Guard;
+	BlockMontage = ActionMontageDataAsset->Datas[index].Block;
 	QSkillMontage = ActionMontageDataAsset->Datas[index].QSkill;
 	ESkillMontage = ActionMontageDataAsset->Datas[index].ESkill;
 	RSkillMontage = ActionMontageDataAsset->Datas[index].RSkill;
 	KnockBackMontage = ActionMontageDataAsset->Datas[index].KnockBack;
+	KnockDownMontage = ActionMontageDataAsset->Datas[index].KnockDown;
 
 	if(AttackComp)
 		AttackComp->OnComponentBeginOverlap.AddDynamic(this, &ACCharacterBase::Overlap);
@@ -159,6 +162,12 @@ void ACCharacterBase::Tick(float DeltaTime)
 	{
 		PrintLine();
 		CLog::Print("Hello");
+	}*/
+
+	/*if (AttackComp)
+	{
+		if (AttackComp->GetAttackType() == EAttackType::AT_KnockBack && AttackComp->GetCollisionEnabled() == ECollisionEnabled::QueryAndPhysics)
+			PrintLine();
 	}*/
 
 }
@@ -177,8 +186,8 @@ void ACCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	EnhancendInputComp->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACCharacterBase::Jumping);
 	EnhancendInputComp->BindAction(EvadeAction, ETriggerEvent::Triggered, this, &ACCharacterBase::Evade);
 	EnhancendInputComp->BindAction(MainAction, ETriggerEvent::Triggered, this, &ACCharacterBase::Main);
-	EnhancendInputComp->BindAction(SubAction, ETriggerEvent::Started, this, &ACCharacterBase::OnSub);
-	EnhancendInputComp->BindAction(SubAction, ETriggerEvent::Completed, this, &ACCharacterBase::OffSub);
+	EnhancendInputComp->BindAction(GuardAction, ETriggerEvent::Started, this, &ACCharacterBase::OnGuard);
+	EnhancendInputComp->BindAction(GuardAction, ETriggerEvent::Completed, this, &ACCharacterBase::OffGuard);
 	EnhancendInputComp->BindAction(TagAction, ETriggerEvent::Triggered, this, &ACCharacterBase::Tag);
 	EnhancendInputComp->BindAction(QSkillAction, ETriggerEvent::Triggered, this, &ACCharacterBase::QSkill);
 	EnhancendInputComp->BindAction(ESkillAction, ETriggerEvent::Triggered, this, &ACCharacterBase::ESkill);
@@ -247,14 +256,14 @@ void ACCharacterBase::Main(const FInputActionValue& Value)
 	}
 }
 
-void ACCharacterBase::OnSub(const FInputActionValue& Value)
+void ACCharacterBase::OnGuard(const FInputActionValue& Value)
 {
-	ASC->TryActivateAbility(ASC->FindAbilitySpecFromClass(UGA_Sub::StaticClass())->Handle);
+	ASC->TryActivateAbility(ASC->FindAbilitySpecFromClass(UGA_Guard::StaticClass())->Handle);
 }
 
-void ACCharacterBase::OffSub(const FInputActionValue& Value)
+void ACCharacterBase::OffGuard(const FInputActionValue& Value)
 {
-	ASC->CancelAbility(ASC->FindAbilitySpecFromClass(UGA_Sub::StaticClass())->Ability);
+	ASC->CancelAbility(ASC->FindAbilitySpecFromClass(UGA_Guard::StaticClass())->Ability);
 }
 
 void ACCharacterBase::QSkill(const FInputActionValue& Value)
@@ -280,8 +289,8 @@ void ACCharacterBase::Tag()
 	ACPlayerController* PC = Cast<ACPlayerController>(GetController());
 	CheckNull(PC);
 
-	CLog::Print(PC->GetCurrentPlayer()->GetName());
-	PC->GetCurrentPlayer()->GetAbilitySystemComponent()->TryActivateAbility(ASC->FindAbilitySpecFromClass(UGA_Tag::StaticClass())->Handle);
+	PC->GetAbilitySystemComponent()->TryActivateAbility(PC->GetAbilitySystemComponent()->FindAbilitySpecFromClass(UGA_Tag::StaticClass())->Handle);
+
 }
 
 void ACCharacterBase::Overlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -291,18 +300,14 @@ void ACCharacterBase::Overlap(UPrimitiveComponent* OverlappedComponent, AActor* 
 	ACCharacterBase* Character = Cast<ACCharacterBase>(OtherActor);
 	CheckNull(Character);
 
-	PrintLine();
-
 	switch (AttackComp->GetAttackType())
 	{
 	case EAttackType::AT_Normal:
-		PrintLine();
 		break;
-	case EAttackType::AT_Airborne:
-		PrintLine();
+	case EAttackType::AT_KnockDown:
+		Character->GetAbilitySystemComponent()->TryActivateAbilityByClass(UGA_KnockDown::StaticClass());
 		break;
 	case EAttackType::AT_KnockBack:
-		PrintLine();
 		Character->GetAbilitySystemComponent()->TryActivateAbilityByClass(UGA_KnockBack::StaticClass());
 		break;
 	default:

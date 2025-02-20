@@ -2,6 +2,8 @@
 #include "Global.h"
 #include "Components/CapsuleComponent.h"
 #include "Character/Component/AttackComponent.h"
+#include "AbilitySystemComponent.h"
+#include "GAS/GA/GA_KnockBack.h"
 
 ACCharacter_Assassin::ACCharacter_Assassin()
 {
@@ -49,6 +51,13 @@ void ACCharacter_Assassin::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 
+}
+
+void ACCharacter_Assassin::Overlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	Super::Overlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
+
+	
 }
 
 void ACCharacter_Assassin::FootOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

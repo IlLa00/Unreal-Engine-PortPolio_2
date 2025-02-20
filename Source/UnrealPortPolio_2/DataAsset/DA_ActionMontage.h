@@ -14,7 +14,10 @@ public:
 		TArray<TObjectPtr<UAnimMontage>> MainAttack;
 
 	UPROPERTY(EditAnywhere)
-		TObjectPtr<UAnimMontage> Sub;
+		TObjectPtr<UAnimMontage> Guard;
+
+	UPROPERTY(EditAnywhere)
+		TObjectPtr<UAnimMontage> Block;
 
 	UPROPERTY(EditAnywhere)
 		TObjectPtr<UAnimMontage> Evade;
@@ -24,6 +27,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		TObjectPtr<UAnimMontage> KnockDown;
+
+	UPROPERTY(EditAnywhere)
+		TObjectPtr<UAnimMontage> Die;
 
 	UPROPERTY(EditAnywhere)
 		TObjectPtr<UAnimMontage> Jump;
@@ -40,8 +46,6 @@ public:
 	UPROPERTY(EditAnywhere)
 		TObjectPtr<UAnimMontage> RSkill;
 }; 
-
-
 
 UCLASS()
 class UNREALPORTPOLIO_2_API UDA_ActionMontage : public UDataAsset
