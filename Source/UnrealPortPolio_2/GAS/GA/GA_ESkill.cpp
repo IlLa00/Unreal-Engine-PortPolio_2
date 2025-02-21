@@ -2,7 +2,6 @@
 #include "Global.h"
 #include "Character/CCharacterBase.h"
 #include "AbilitySystemComponent.h"
-#include "GAS/GE/GE_CoolDown.h"
 
 UGA_ESkill::UGA_ESkill()
 {
@@ -15,10 +14,10 @@ UGA_ESkill::UGA_ESkill()
 
 	BlockAbilitiesWithTag.AddTag(FGameplayTag::RequestGameplayTag(FName("Character.Cooldown.Q")));
 
-	CHelpers::GetClass(&GECooldown, "/Game/GAS/GameplayEffect/asdf");
-	CheckNull(GECooldown);
+	CHelpers::GetClass(&GEECooldown, "/Game/GAS/GameplayEffect/BP_GE_ECooldown");
+	CheckNull(GEECooldown);
 
-	CooldownGameplayEffectClass = GECooldown;
+	CooldownGameplayEffectClass = GEECooldown;
 }
 
 void UGA_ESkill::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
@@ -30,6 +29,7 @@ void UGA_ESkill::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 	
 	FGameplayEffectContextHandle EffectContext = Character->GetAbilitySystemComponent()->MakeEffectContext();
 	FGameplayEffectSpecHandle CooldownEffectSpec = Character->GetAbilitySystemComponent()->MakeOutgoingSpec(CooldownGameplayEffectClass, 1.0f, EffectContext);
+
 	Character->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*CooldownEffectSpec.Data.Get());
 
 	Character->GetAbilitySystemComponent()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.ESkill")));

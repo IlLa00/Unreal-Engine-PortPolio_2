@@ -20,5 +20,5 @@ protected:
 	void EndMontage(UAnimMontage* Montage, bool bInterrupted);
 
 private:
-	TSubclassOf<UGameplayEffect> GECooldown;
+	TSubclassOf<UGameplayEffect> GEECooldown;
 };

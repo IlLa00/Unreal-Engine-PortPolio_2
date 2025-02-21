@@ -4,7 +4,6 @@
 #include "Abilities/GameplayAbility.h"
 #include "GA_Main.generated.h"
 
-
 UCLASS()
 class UNREALPORTPOLIO_2_API UGA_Main : public UGameplayAbility
 {
@@ -19,4 +18,10 @@ protected:
 	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
 
 	void EndMontage(UAnimMontage* Montage, bool bInterrupted);
+	void WaitMontage(UAnimMontage* Montage, bool bInterrupted);
+	void StartTimer();
+	void ResetTimer();
+	
+private:
+	FTimerHandle ComboTimer;
 };

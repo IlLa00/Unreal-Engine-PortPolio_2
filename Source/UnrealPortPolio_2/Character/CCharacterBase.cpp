@@ -185,7 +185,7 @@ void ACCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	EnhancendInputComp->BindAction(SprintAction, ETriggerEvent::Completed, this, &ACCharacterBase::OffSprint);
 	EnhancendInputComp->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACCharacterBase::Jumping);
 	EnhancendInputComp->BindAction(EvadeAction, ETriggerEvent::Triggered, this, &ACCharacterBase::Evade);
-	EnhancendInputComp->BindAction(MainAction, ETriggerEvent::Triggered, this, &ACCharacterBase::Main);
+	EnhancendInputComp->BindAction(MainAction, ETriggerEvent::Started, this, &ACCharacterBase::Main);
 	EnhancendInputComp->BindAction(GuardAction, ETriggerEvent::Started, this, &ACCharacterBase::OnGuard);
 	EnhancendInputComp->BindAction(GuardAction, ETriggerEvent::Completed, this, &ACCharacterBase::OffGuard);
 	EnhancendInputComp->BindAction(TagAction, ETriggerEvent::Triggered, this, &ACCharacterBase::Tag);
@@ -250,6 +250,7 @@ void ACCharacterBase::Main(const FInputActionValue& Value)
 	}
 	else
 	{
+		PrintLine();
 		ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.Main")));
 
 		ASC->TryActivateAbility(ASC->FindAbilitySpecFromClass(UGA_Main::StaticClass())->Handle);

@@ -8,9 +8,15 @@ UGA_QSkill::UGA_QSkill()
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.QSkill")));
 
 	BlockAbilitiesWithTag.AddTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.QSkill")));
+	BlockAbilitiesWithTag.AddTag(FGameplayTag::RequestGameplayTag(FName("Character.Cooldown.Q")));
 	BlockAbilitiesWithTag.AddTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.Main")));
 	BlockAbilitiesWithTag.AddTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.ESkill")));
 	BlockAbilitiesWithTag.AddTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.RSkill")));
+
+	CHelpers::GetClass(&GEQCooldown, "/Game/GAS/GameplayEffect/BP_GE_QCooldown");
+	CheckNull(GEQCooldown);
+
+	CooldownGameplayEffectClass = GEQCooldown;
 }
 
 void UGA_QSkill::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
@@ -19,6 +25,12 @@ void UGA_QSkill::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 
 	ACCharacterBase* Character = Cast<ACCharacterBase>(ActorInfo->OwnerActor);
 	CheckNull(Character);
+
+	FGameplayEffectContextHandle EffectContext = Character->GetAbilitySystemComponent()->MakeEffectContext();
+	FGameplayEffectSpecHandle CooldownEffectSpec = Character->GetAbilitySystemComponent()->MakeOutgoingSpec(CooldownGameplayEffectClass, 1.0f, EffectContext);
+
+	Character->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*CooldownEffectSpec.Data.Get());
+
 
 	Character->GetAbilitySystemComponent()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.QSkill")));
 
