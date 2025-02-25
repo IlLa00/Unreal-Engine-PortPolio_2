@@ -2,6 +2,7 @@
 #include "Global.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Components/BoxComponent.h"
 #include "Character/Component/AttackComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "AbilitySystemComponent.h"
@@ -15,6 +16,7 @@
 #include "GAS/GA/GA_Evade.h"
 #include "GAS/GA/GA_Main.h"
 #include "GAS/GA/GA_Guard.h"
+#include "GAS/GA/GA_Block.h"
 #include "GAS/GA/GA_Tag.h"
 #include "GAS/GA/GA_QSkill.h"
 #include "GAS/GA/GA_ESkill.h"
@@ -82,6 +84,11 @@ ACCharacterBase::ACCharacterBase()
 	CheckNull(AttackComp);
 
 	AttackComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	CHelpers::CreateSceneComponent(this, &GuardComp, "GuardComp", GetMesh());
+	CheckNull(GuardComp);
+	
+	GuardComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	
 	ASC = CreateDefaultSubobject<UAbilitySystemComponent>("ASC");
 	CheckNull(ASC);
@@ -134,6 +141,9 @@ void ACCharacterBase::BeginPlay()
 	FGameplayAbilitySpec KnockDownAbilitySpec(UGA_KnockDown::StaticClass());
 	ASC->GiveAbility(KnockDownAbilitySpec);
 
+	FGameplayAbilitySpec BlockAbilitySpec(UGA_Block::StaticClass());
+	ASC->GiveAbility(BlockAbilitySpec);
+
 	for (const auto& data : ActionMontageDataAsset->Datas[index].MainAttack)
 	{
 		MainAttackMontages.Add(data);
@@ -152,6 +162,9 @@ void ACCharacterBase::BeginPlay()
 
 	if(AttackComp)
 		AttackComp->OnComponentBeginOverlap.AddDynamic(this, &ACCharacterBase::Overlap);
+
+	if (GuardComp)
+		GuardComp->OnComponentBeginOverlap.AddDynamic(this, &ACCharacterBase::GuardOverlap);
 }
 
 void ACCharacterBase::Tick(float DeltaTime)
@@ -312,7 +325,11 @@ void ACCharacterBase::Overlap(UPrimitiveComponent* OverlappedComponent, AActor* 
 		Character->GetAbilitySystemComponent()->TryActivateAbilityByClass(UGA_KnockBack::StaticClass());
 		break;
 	default:
-
 		break;
 	}
+}
+
+void ACCharacterBase::GuardOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	ASC->TryActivateAbility(ASC->FindAbilitySpecFromClass(UGA_Block::StaticClass())->Handle);
 }

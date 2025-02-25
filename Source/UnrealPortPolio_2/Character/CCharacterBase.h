@@ -11,6 +11,7 @@ class UInputAction;
 class USpringArmComponent;
 class UCameraComponent;
 class UAttackComponent;
+class UBoxComponent;
 class UAbilitySystemComponent;
 class UDA_ActionMontage;
 class UCPlayerAttributeSet;
@@ -50,6 +51,9 @@ protected:
 
 	UFUNCTION()
 	virtual void Overlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	virtual void GuardOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	
 public:
 	virtual TArray<UAnimMontage*> GetMainAttackMontages() { return MainAttackMontages; }
@@ -111,6 +115,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	UAttackComponent* AttackComp;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	UBoxComponent* GuardComp;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	TSubclassOf<UAnimInstance> AnimClass;

@@ -1,6 +1,7 @@
 #include "CCharacter_Assassin.h"
 #include "Global.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/BoxComponent.h"
 #include "Character/Component/AttackComponent.h"
 #include "AbilitySystemComponent.h"
 #include "GAS/GA/GA_KnockBack.h"
@@ -19,6 +20,7 @@ ACCharacter_Assassin::ACCharacter_Assassin()
 	CheckNull(AnimClass);
 
 	AttackComp->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "R_Hand_Weapon");
+	GuardComp->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "R_Hand_Weapon");
 
 	CHelpers::CreateSceneComponent(this, &FootAttackComp, "FootAttackComp", GetMesh());
 	CheckNull(FootAttackComp);
@@ -58,6 +60,13 @@ void ACCharacter_Assassin::Overlap(UPrimitiveComponent* OverlappedComponent, AAc
 	Super::Overlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
 
 	
+}
+
+void ACCharacter_Assassin::GuardOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	Super::GuardOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
+
+
 }
 
 void ACCharacter_Assassin::FootOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
