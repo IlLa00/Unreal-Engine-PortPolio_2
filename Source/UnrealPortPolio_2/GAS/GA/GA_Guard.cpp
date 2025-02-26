@@ -21,6 +21,8 @@ void UGA_Guard::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const F
 
 	Character->GetAbilitySystemComponent()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.Guard")));
 
+	PrintLine();
+
 	UAnimInstance* AnimInstance = Character->GetMesh()->GetAnimInstance();
 	CheckNull(AnimInstance);
 

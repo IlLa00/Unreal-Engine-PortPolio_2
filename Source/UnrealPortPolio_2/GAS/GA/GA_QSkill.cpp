@@ -34,8 +34,6 @@ void UGA_QSkill::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 
 	Character->GetAbilitySystemComponent()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.QSkill")));
 
-	PrintLine();
-
 	UAnimInstance* AnimInstance = Character->GetMesh()->GetAnimInstance();
 	CheckNull(AnimInstance);
 

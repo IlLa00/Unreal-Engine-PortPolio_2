@@ -182,7 +182,6 @@ void ACCharacterBase::Tick(float DeltaTime)
 		if (AttackComp->GetAttackType() == EAttackType::AT_KnockBack && AttackComp->GetCollisionEnabled() == ECollisionEnabled::QueryAndPhysics)
 			PrintLine();
 	}*/
-
 }
 
 void ACCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -331,5 +330,8 @@ void ACCharacterBase::Overlap(UPrimitiveComponent* OverlappedComponent, AActor* 
 
 void ACCharacterBase::GuardOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (OtherActor == this) return;
+
+	PrintLine();
 	ASC->TryActivateAbility(ASC->FindAbilitySpecFromClass(UGA_Block::StaticClass())->Handle);
 }

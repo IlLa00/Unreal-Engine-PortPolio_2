@@ -22,6 +22,8 @@ EBTNodeResult::Type UCBTTaskNode_Evade::ExecuteTask(UBehaviorTreeComponent& Owne
 	ACCharacterBase* AI = Cast<ACCharacterBase>(AIC->GetPawn());
 	CheckNullResult(AI, EBTNodeResult::Failed);
 
+	PrintLine();
+
 	AI->GetAbilitySystemComponent()->TryActivateAbilityByClass(UGA_Evade::StaticClass());
 
 	return EBTNodeResult::InProgress;

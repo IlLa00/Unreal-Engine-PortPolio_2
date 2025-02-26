@@ -2,6 +2,7 @@
 #include "Global.h"
 #include "Character/CCharacterBase.h"
 #include "AbilitySystemComponent.h"
+#include "Components/CapsuleComponent.h"
 
 UGA_Block::UGA_Block()
 {
@@ -21,6 +22,11 @@ void UGA_Block::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const F
 
 	Character->GetAbilitySystemComponent()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.Block")));
 
+	UCapsuleComponent* RootComp = Cast<UCapsuleComponent>(Character->GetRootComponent());
+	CheckNull(RootComp);
+
+	RootComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	PrintLine();
 	UAnimInstance* AnimInstance = Character->GetMesh()->GetAnimInstance();
 	CheckNull(AnimInstance);
 
@@ -42,6 +48,11 @@ void UGA_Block::EndMontage(UAnimMontage* Montage, bool bInterrupted)
 	CheckNull(Character);
 
 	Character->GetAbilitySystemComponent()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.Block")));
+
+	UCapsuleComponent* RootComp = Cast<UCapsuleComponent>(Character->GetRootComponent());
+	CheckNull(RootComp);
+
+	RootComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
 	EndAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), false, false);
 }

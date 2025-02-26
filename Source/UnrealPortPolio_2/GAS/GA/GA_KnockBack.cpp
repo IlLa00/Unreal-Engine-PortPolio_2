@@ -28,6 +28,8 @@ void UGA_KnockBack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, con
 
 	Character->GetAbilitySystemComponent()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.KnockBack")));
 
+	PrintLine();
+
 	UAnimInstance* AnimInstance = Character->GetMesh()->GetAnimInstance();
 	CheckNull(AnimInstance);
 
@@ -40,8 +42,6 @@ void UGA_KnockBack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, con
 
 void UGA_KnockBack::EndMontage(UAnimMontage* Montage, bool bInterrupted)
 {
-	PrintLine();
-
 	ACCharacterBase* Character = Cast<ACCharacterBase>(GetCurrentActorInfo()->OwnerActor);
 	CheckNull(Character);
 

@@ -10,6 +10,7 @@ void UCAnimNotify_Targeting::Notify(USkeletalMeshComponent* MeshComp, UAnimSeque
 	CheckNull(Character);
 
 	TArray<AActor*> Ignores;
+	Ignores.Add(Character);
 
 	TArray<FHitResult> HitResults;
 	if (UKismetSystemLibrary::SphereTraceMultiByProfile(Character->GetWorld(), Character->GetActorLocation(), Character->GetActorLocation(), 1500.f, "Pawn", true, Ignores, EDrawDebugTrace::Persistent, HitResults, true))
