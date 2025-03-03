@@ -10,11 +10,12 @@
 #include "EnhancedInputComponent.h"
 #include "InputMappingContext.h"
 #include "Character/CPlayerController.h"
-#include "GAS/AttributeSet/CPlayerAttributeSet.h"
+#include "GAS/AttributeSet/CCharacterAttributeSet.h"
 #include "GAS/GA/GA_Jump.h"
 #include "GAS/GA/GA_JumpAttack.h"
 #include "GAS/GA/GA_Evade.h"
 #include "GAS/GA/GA_Main.h"
+#include "GAS/GA/GA_NormalAttack.h"
 #include "GAS/GA/GA_Guard.h"
 #include "GAS/GA/GA_Block.h"
 #include "GAS/GA/GA_Tag.h"
@@ -96,8 +97,8 @@ ACCharacterBase::ACCharacterBase()
 	CHelpers::GetAsset(&ActionMontageDataAsset, "/Game/DataAsset/DA_ActionMontage");
 	CheckNull(ActionMontageDataAsset);
 
-	PlayerAttributeSet = CreateDefaultSubobject<UCPlayerAttributeSet>("AttributeSet");
-	CheckNull(PlayerAttributeSet);
+	CharacterAttributeSet = CreateDefaultSubobject<UCCharacterAttributeSet>("AttributeSet");
+	CheckNull(CharacterAttributeSet);
 }
 
 void ACCharacterBase::BeginPlay()
@@ -122,6 +123,9 @@ void ACCharacterBase::BeginPlay()
 
 	FGameplayAbilitySpec MainAbilitySpec(UGA_Main::StaticClass());
 	ASC->GiveAbility(MainAbilitySpec);
+
+	FGameplayAbilitySpec NormalAttackAbilitySpec(UGA_NormalAttack::StaticClass());
+	ASC->GiveAbility(NormalAttackAbilitySpec);
 
 	FGameplayAbilitySpec GuardAbilitySpec(UGA_Guard::StaticClass());
 	ASC->GiveAbility(GuardAbilitySpec);
@@ -195,15 +199,15 @@ void ACCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	EnhancendInputComp->BindAction(LookAction, ETriggerEvent::Triggered, this, &ACCharacterBase::Look);
 	EnhancendInputComp->BindAction(SprintAction, ETriggerEvent::Started, this, &ACCharacterBase::OnSprint);
 	EnhancendInputComp->BindAction(SprintAction, ETriggerEvent::Completed, this, &ACCharacterBase::OffSprint);
-	EnhancendInputComp->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACCharacterBase::Jumping);
-	EnhancendInputComp->BindAction(EvadeAction, ETriggerEvent::Triggered, this, &ACCharacterBase::Evade);
+	EnhancendInputComp->BindAction(JumpAction, ETriggerEvent::Started, this, &ACCharacterBase::Jumping);
+	EnhancendInputComp->BindAction(EvadeAction, ETriggerEvent::Started, this, &ACCharacterBase::Evade);
 	EnhancendInputComp->BindAction(MainAction, ETriggerEvent::Started, this, &ACCharacterBase::Main);
 	EnhancendInputComp->BindAction(GuardAction, ETriggerEvent::Started, this, &ACCharacterBase::OnGuard);
 	EnhancendInputComp->BindAction(GuardAction, ETriggerEvent::Completed, this, &ACCharacterBase::OffGuard);
-	EnhancendInputComp->BindAction(TagAction, ETriggerEvent::Triggered, this, &ACCharacterBase::Tag);
-	EnhancendInputComp->BindAction(QSkillAction, ETriggerEvent::Triggered, this, &ACCharacterBase::QSkill);
-	EnhancendInputComp->BindAction(ESkillAction, ETriggerEvent::Triggered, this, &ACCharacterBase::ESkill);
-	EnhancendInputComp->BindAction(RSkillAction, ETriggerEvent::Triggered, this, &ACCharacterBase::RSkill);
+	EnhancendInputComp->BindAction(TagAction, ETriggerEvent::Started, this, &ACCharacterBase::Tag);
+	EnhancendInputComp->BindAction(QSkillAction, ETriggerEvent::Started, this, &ACCharacterBase::QSkill);
+	EnhancendInputComp->BindAction(ESkillAction, ETriggerEvent::Started, this, &ACCharacterBase::ESkill);
+	EnhancendInputComp->BindAction(RSkillAction, ETriggerEvent::Started, this, &ACCharacterBase::RSkill);
 }
 
 UAbilitySystemComponent* ACCharacterBase::GetAbilitySystemComponent() const

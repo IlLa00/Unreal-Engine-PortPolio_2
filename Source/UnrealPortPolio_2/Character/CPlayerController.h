@@ -8,7 +8,7 @@
 class UCPlayerAttributeSet;
 class ACCharacterBase;
 class ACCharacter_Katana;
-class UDA_PlayerAttribute;
+class UDA_CharacterAttribute;
 
 UCLASS()
 class UNREALPORTPOLIO_2_API ACPlayerController : public APlayerController, public IAbilitySystemInterface
@@ -32,12 +32,12 @@ public:
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "GAS")
-	TObjectPtr<UAbilitySystemComponent> ASC;
+		TObjectPtr<UAbilitySystemComponent> ASC;
 
-protected:
 	TArray<ACCharacterBase*> SpawnPlayerClass;
-	ACCharacterBase* CurrentPlayer;
-	UDA_PlayerAttribute* AttributeDataSet;
-
 	TSubclassOf<ACCharacter_Katana> KatanaCharacter;
+	ACCharacterBase* CurrentPlayer;
+	
+	UDA_CharacterAttribute* AttributeDataSet;
+	TArray<float> CurrentHealth;
 };

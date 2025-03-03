@@ -2,10 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "DA_PlayerAttribute.generated.h"
+#include "DA_CharacterAttribute.generated.h"
 
 USTRUCT(BlueprintType)
-struct FPlayerAttributeData
+struct FCharacterAttributeData
 {
 	GENERATED_BODY()
 
@@ -21,12 +21,12 @@ public:
 };
 
 UCLASS()
-class UNREALPORTPOLIO_2_API UDA_PlayerAttribute : public UDataAsset
+class UNREALPORTPOLIO_2_API UDA_CharacterAttribute : public UDataAsset
 {
 	GENERATED_BODY()
 	
 public:
 	UPROPERTY(EditAnywhere)
-	TArray<FPlayerAttributeData> Datas;
+	TArray<FCharacterAttributeData> Datas;
 
 };

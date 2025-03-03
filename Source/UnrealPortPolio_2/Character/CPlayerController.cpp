@@ -3,8 +3,8 @@
 #include "AbilitySystemComponent.h"
 #include "Character/CCharacter_Assassin.h"
 #include "Character/CCharacter_Katana.h"
-#include "DataAsset/DA_PlayerAttribute.h"
-#include "GAS/AttributeSet/CPlayerAttributeSet.h"
+#include "DataAsset/DA_CharacterAttribute.h"
+#include "GAS/AttributeSet/CCharacterAttributeSet.h"
 #include "GAS/GA/GA_Tag.h"
 
 ACPlayerController::ACPlayerController()
@@ -15,7 +15,7 @@ ACPlayerController::ACPlayerController()
 	CHelpers::GetClass(&KatanaCharacter, "/Game/Character/Katana/BP_Katana");
 	CheckNull(KatanaCharacter);
 
-	CHelpers::GetAsset(&AttributeDataSet, "/Game/DataAsset/DA_PlayerAttribute");
+	CHelpers::GetAsset(&AttributeDataSet, "/Game/DataAsset/DA_CharacterAttribute");
 	CheckNull(AttributeDataSet);
 }
 
@@ -29,10 +29,12 @@ void ACPlayerController::BeginPlay()
 	SpawnPlayerClass.Add(Cast<ACCharacterBase>(GetPawn()));
 	SpawnPlayerClass.Add(Cast<ACCharacterBase>(KatanaCharacter->GetDefaultObject()));
 
-	for (const auto& Class : SpawnPlayerClass)
-	{
-		CLog::Print(Class->GetName());
-	}
+	CurrentHealth.Reserve(SpawnPlayerClass.Num());
+
+	// 초기 캐릭터 설정
+	CurrentPlayer->GetPlayerAttributeSet()->SetCurrentHealth(CurrentPlayer->GetPlayerAttributeSet()->GetBaseHealth());
+	CurrentPlayer->GetPlayerAttributeSet()->SetCurrentDamage(CurrentPlayer->GetPlayerAttributeSet()->GetBaseDamage());
+	CurrentPlayer->GetPlayerAttributeSet()->SetCurrentDefense(CurrentPlayer->GetPlayerAttributeSet()->GetBaseDefense());
 }
 
 void ACPlayerController::OnPossess(APawn* aPawn)
@@ -42,24 +44,38 @@ void ACPlayerController::OnPossess(APawn* aPawn)
 	// 여기서 데이터에셋 값 읽기
 	CurrentPlayer = Cast<ACCharacterBase>(aPawn);
 
-	//for (int32 i = 0; i < AttributeDataSet->Datas.Num(); i++)
-	//{
-	//	if (i == CurrentPlayer->index)
-	//	{
-	//		CurrentPlayer->GetPlayerAttributeSet()->SetBaseHealth(AttributeDataSet->Datas[i].BaseHealth);
-	//		CurrentPlayer->GetPlayerAttributeSet()->SetBaseDamage(AttributeDataSet->Datas[i].BaseDamage);
-	//		CurrentPlayer->GetPlayerAttributeSet()->SetBaseDefense(AttributeDataSet->Datas[i].BaseDefense);
+	for (int32 i = 0; i < AttributeDataSet->Datas.Num(); i++)
+	{
+		if (i == CurrentPlayer->index)
+		{
+			CurrentPlayer->GetPlayerAttributeSet()->SetBaseHealth(AttributeDataSet->Datas[i].BaseHealth);
+			CurrentPlayer->GetPlayerAttributeSet()->SetBaseDamage(AttributeDataSet->Datas[i].BaseDamage);
+			CurrentPlayer->GetPlayerAttributeSet()->SetBaseDefense(AttributeDataSet->Datas[i].BaseDefense);
 
-	//		// Current값은 생각해야됨
-	//	}
-	//}
+			// Current값은 생각해야됨
+		}
+	}
 
+	// 클래스가 없음
+
+	if (!SpawnPlayerClass.IsEmpty()) // 나중에 Index int변수 만들어야할듯
+	{
+		if (CurrentPlayer == SpawnPlayerClass[0])
+			CurrentPlayer->GetPlayerAttributeSet()->SetCurrentHealth(CurrentHealth[0]);
+		else if (CurrentPlayer == SpawnPlayerClass[1])
+			CurrentPlayer->GetPlayerAttributeSet()->SetCurrentHealth(CurrentHealth[1]);
+	}
 }
 
 void ACPlayerController::OnUnPossess()
 {
-	Super::OnUnPossess();
+	// 체력 저장
+	if (CurrentPlayer == SpawnPlayerClass[0])
+		CurrentHealth[0] = CurrentPlayer->GetPlayerAttributeSet()->GetCurrentHealth();
+	else if (CurrentPlayer == SpawnPlayerClass[1])
+		CurrentHealth[1] = CurrentPlayer->GetPlayerAttributeSet()->GetCurrentHealth();
 
+	Super::OnUnPossess();
 }
 
 UAbilitySystemComponent* ACPlayerController::GetAbilitySystemComponent() const
@@ -72,11 +88,9 @@ void ACPlayerController::Tag()
 	FVector NewLocation = CurrentPlayer->GetActorLocation();
 
 	CurrentPlayer->GetAbilitySystemComponent()->CancelAllAbilities();
-	CurrentPlayer->SetActorLocation(FVector(0, 0, 1000));
-	CurrentPlayer->UnPossessed();
+	CurrentPlayer->GetController<ACPlayerController>()->OnUnPossess();
 
 	CurrentPlayer->Destroy();
-
 
 	FTransform TF;
 	TF.SetLocation(NewLocation);

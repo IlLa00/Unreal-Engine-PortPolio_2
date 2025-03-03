@@ -14,7 +14,8 @@ class UAttackComponent;
 class UBoxComponent;
 class UAbilitySystemComponent;
 class UDA_ActionMontage;
-class UCPlayerAttributeSet;
+class UCCharacterAttributeSet;
+class UDA_CharacterAttribute;
 
 UCLASS()
 class UNREALPORTPOLIO_2_API ACCharacterBase : public ACharacter, public IAbilitySystemInterface
@@ -68,7 +69,7 @@ public:
 	virtual UAnimMontage* GetKnockBackMontage() { return KnockBackMontage; }
 	virtual UAnimMontage* GetKnockDownMontage() { return KnockDownMontage; }
 	
-	FORCEINLINE UCPlayerAttributeSet* GetPlayerAttributeSet() { return PlayerAttributeSet; }
+	FORCEINLINE UCCharacterAttributeSet* GetPlayerAttributeSet() { return CharacterAttributeSet; }
 	
 protected:
 	UPROPERTY(VisibleDefaultsOnly, Category = "InputAction")
@@ -126,10 +127,11 @@ protected:
 	TObjectPtr<UAbilitySystemComponent> ASC;
 
 	UPROPERTY(EditDefaultsOnly, Category = "GAS")
-	TObjectPtr<UCPlayerAttributeSet> PlayerAttributeSet;
+	TObjectPtr<UCCharacterAttributeSet> CharacterAttributeSet;
 
 protected:
 	UDA_ActionMontage* ActionMontageDataAsset;
+	UDA_CharacterAttribute* CharacterAttributeDataAsset;
 
 	TArray<UAnimMontage*> MainAttackMontages;
 	UAnimMontage* JumpMontage;

@@ -3,7 +3,7 @@
 #include "Character/CAIControllerBase.h"
 #include "Character/CCharacterBase.h"
 #include "AbilitySystemComponent.h"
-#include "GAS/GA/GA_Main.h"
+#include "GAS/GA/GA_NormalAttack.h"
 
 UCBTTaskNode_MainAttack::UCBTTaskNode_MainAttack()
 {
@@ -22,7 +22,7 @@ EBTNodeResult::Type UCBTTaskNode_MainAttack::ExecuteTask(UBehaviorTreeComponent&
 	ACCharacterBase* AI = Cast<ACCharacterBase>(AIC->GetPawn());
 	CheckNullResult(AI, EBTNodeResult::Failed);
 
-	AI->GetAbilitySystemComponent()->TryActivateAbilityByClass(UGA_Main::StaticClass());
+	AI->GetAbilitySystemComponent()->TryActivateAbilityByClass(UGA_NormalAttack::StaticClass());
 
 	return EBTNodeResult::InProgress;
 }
@@ -38,6 +38,8 @@ void UCBTTaskNode_MainAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8*
 	CheckNull(AI);
 
 	if (!AI->GetCurrentMontage())
+	{
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+	}
 
 }

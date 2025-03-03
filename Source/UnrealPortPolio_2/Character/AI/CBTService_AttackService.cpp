@@ -25,7 +25,7 @@ void UCBTService_AttackService::TickNode(UBehaviorTreeComponent& OwnerComp, uint
 	CheckNull(AICharacter);
 
 	float Distance = AICharacter->GetDistanceTo(Cast<AActor>(AIC->GetBlackboardComponent()->GetValueAsObject("TargetActor")));
-	// CLog::Print(Distance);
+	CLog::Print(Distance);
 
 	FVector Start = AICharacter->GetActorLocation();
 	TArray<AActor*> Ignores;
@@ -35,20 +35,18 @@ void UCBTService_AttackService::TickNode(UBehaviorTreeComponent& OwnerComp, uint
 
 	if(UKismetSystemLibrary::SphereTraceSingleByProfile(AICharacter->GetWorld(), Start, Start, 300.f, "AttackCollision", false, Ignores, EDrawDebugTrace::ForOneFrame, HitResult, true))
 	{
-		CLog::Print(HitResult.Component->GetName());
+		FVector fev = Cast<AActor>(AIC->GetBlackboardComponent()->GetValueAsObject("TargetActor"))->GetActorLocation() - AICharacter->GetActorLocation();
+		fev.Normalize();
+		fev *= -1;
 
-		FVector Hit = HitResult.ImpactPoint;
-		FVector Dir = (AICharacter->GetActorLocation() - Hit).GetSafeNormal();
-
-		CLog::Print(Dir);
+		AICharacter->SetActorRotation(fev.ToOrientationQuat());
 
 		AICharacter->GetAbilitySystemComponent()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.Evade")));
 	}
 
-
-	if (Distance < 50)
+	if (Distance < 200)
 	{
-		AICharacter->GetAbilitySystemComponent()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.Main")));
+		AICharacter->GetAbilitySystemComponent()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.Action.NormalAttack")));
 
 	}
 	else if (Distance < 400)
